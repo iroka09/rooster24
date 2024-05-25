@@ -2,6 +2,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const { pendingUserModel } = require("./models/userModel");
+const fs = require("fs");
 const path = require("path");
 const { escape } = require("validator");
 const ROUTERS = require("./routes/routers")
