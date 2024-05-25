@@ -12,7 +12,7 @@ const session = require('express-session');
 const redis = require('redis');
 const connectRedis = require('connect-redis');
 const expFormidable = require("express-formidable");
-const chalk = require("chalk")
+const chalk = require("chalk");
 // const helmet = require("helmet")
 const cors = require("cors")
 require("dotenv/config");
