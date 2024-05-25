@@ -1,0 +1,54 @@
+
+
+	<div  class="toast bg-dark text-light fixed-bottom mx-auto badge-pill" style= "width:90%" data-delay= "5000" id="toast">
+	 <div  class="toast-body"></div>
+	</div>
+
+
+
+<footer  class="pt-3 pb-2 mt-5">
+  <div class="text-right mb-3 px-2">
+  <%if(isMember){%>
+  <a href="/logout" class="btn btn-danger ml-2 py-1  font-size-70">
+    Logout
+  </a>
+  <%}
+  else { %>
+  <a href="/login" class="btn btn-warning ml-2 py-1  font-size-70">
+    Login
+  </a>
+ <% }%>
+  </div>
+   <h6 class="text-warning text-center">Contact</h6>
+  <ul class="px-3 mx-auto ul-style-none d-flex flex-wrap justify-content-center small max-width border rounded border-dark" style="max-width: 95%">
+   <!-- <li>
+    <b class="text-warning ">
+    Email <i class="fa fa-envelope"></i> </b>&nbsp;<a href="mailto: <%=contactEmailAddress%>" class="text-">
+     <u>Send your message</u>
+    </a>
+    </li> &emsp; -->
+    <li>
+    <b class="text-warning ">
+    Facebook <i class="fa fa-facebook-square"></i> </b> &nbsp;<a href="https://www.facebook.com/108221781466675" class="text-">
+     <u>Like us on facebook</u>
+    </a>
+    </li> &emsp; 
+  </ul>
+  <hr>
+<div  class="max-width small mx-auto px-2 text-center">
+  <%=websiteDescription%>
+ </div>
+<hr/>
+<div class="text-center">
+ &copy; Copyright &nbsp; 2021 - <%=new Date().getFullYear()%>
+<br/>
+All rights reserved.
+</div>
+</footer>
+
+
+<script >
+  $(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+  })
+</script>

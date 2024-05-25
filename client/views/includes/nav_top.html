@@ -1,0 +1,87 @@
+<style >
+    #nav-top{
+ position: relative; 
+ top:0;
+ padding: 0 20px; 
+ box-shadw: 0 6px 16px -3px rgba(60,60,60,0.2);
+ white-space: nowrap;
+ overflow: scroll; 
+ font-weight: 400; 
+ padding-right: 30px;
+ max-height: 50vh
+ }
+
+ #nav-top li{
+ display: inline-block; 
+ min-width: 50px;
+ padding: 10px 0;
+ margin-left: 10px;
+ text-align: center;
+ }
+  #nav-top a{
+  color: var(--mygray);
+  }
+ #nav-top li.current{
+ border-bottom: 3px solid var(--mylightmain);
+ }
+ 
+  #nav-top li.current a {
+ color: var(--mylightmain); 
+ }
+ #nav-toggler:active{
+   background: #aaa;
+ }
+</style>
+
+ <section class="sticky-top d-md-none" id="nav-cont">
+	<nav class= "position-relative bg-white">
+	<div style= "background-image: linear-gradient(to right, transparent, white 80%); position: absolute; right:0; width: 10%; height:100%;z-index:1"></div>
+	<div style= "background-image: linear-gradient(to left, transparent, white 80%); position: absolute; left:0; width: 10%; height:100%;z-index:1"></div>
+	<ul  id="nav-top" class="shadow overflow-scroll">
+<% nav.cat && nav.cat.map(x=>{ %>
+<li class="<%=(query.cat===x)?"current":""%>">
+   <a href= "/?cat=<%=x%>&filter=All">
+    <%=x%> (<%=convertUnit(x==="All"?catNum.length:catNum.filter(c=>c===x.toLowerCase()).length)%>)
+    </a></li>
+<% }) %>
+	   </ul>
+	</nav>
+	<div class="text-right px-2">
+<button class="btn shadow-sm border bg-white" id="nav-toggler" data-dir="down">
+	   <i class="text-danger fa fa-chevron-down fa-lg"></i>
+	   </button>
+</div>	
+</section>
+
+	<script >
+	
+$(function(){
+try{
+let left = $("#nav-top li.current")[0] && $("#nav-top li.current")[0].offsetLeft - (window.innerWidth /2) + 
+($("#nav-top li.current").width()/2);
+ $("#nav-top")[0].scrollTo({
+     top: 0,
+     left,
+  //   behavior: "smooth"
+ });
+ 
+ $("#nav-toggler").click(function(event){
+ let dir = $(this).attr("data-dir");
+ if(dir === "down"){
+  $(this).attr("data-dir", "up")
+  $(this).children().removeClass("fa-chevron-down").addClass("fa-chevron-up")
+  $("#nav-top").css("white-space", "initial")
+ }
+ else if(dir === "up"){
+  $(this).attr("data-dir", "down")
+  $(this).children().removeClass("fa-chevron-up").addClass("fa-chevron-down")
+  $("#nav-top").css("white-space", "nowrap")
+ }
+})
+ 
+}
+catch(e){
+ // alert(e)
+}
+})
+	</script>

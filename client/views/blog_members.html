@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html >
+ <head>
+	 <title>Members</title>
+	 <meta name= "description" content= "All members." />
+<%- include("includes/libraries_tags.html") %>	
+	<script src="/get_countries.js"></script>
+ </head>
+	 <body onscroll= "scroll()"> 
+<main>
+	 
+<%- include("includes/header.html") %>
+	
+
+<div  class="container-md">
+<div  class="row">
+	
+	<!-- left-->
+<div class="col-md-9">
+
+<h4 class="text-mylightmain text-center mt-5">Search members</h4>
+	
+	<div  class="bg-light px-2 py-3 shadow-sm mb-4">
+<div><i  class="fa fa-users"></i> Total members: &nbsp; <i style= "color: orange">
+<%=totalMembers.toLocaleString("en")%>
+</i></div>
+<div><i  class="fa fa-users"></i> Active members: &nbsp; <i style= "color: orange">
+<%=activeMembers.toLocaleString("en")%>
+</i></div>
+</div>
+
+	  <!-- Advert -->
+	
+	  
+
+<div  class="text-center text-danger small"></div>
+
+<form action = "/members"  class="mx-auto mb-3 bg-light shadow-sm px-1 py-4">
+<label  class="small">Name / Username</label>
+<div  class="input-group">
+<select  class="custom-select" name= "type" name="filter">
+<option>By Name</option>
+<option>By Username</option>
+</select>
+<input name= "search" placeholder = "Search members..."  class="form-control w-25" type = "search"/>
+<div  class="input-group-append">
+<button  class="btn bg-mylightmain text-light"><i  class="fa fa-search"></i></button>
+     </div>
+   </div>
+ </form>
+ 
+ 
+ <form  class="bg-light p-2 shadow-sm mb-5" action="/members">
+ <div  class="form-group">
+ <label  class="small">Country / State / Gender</label>
+ <div  class="input-group">
+ <select  class="custom-select" name="country">
+ <option>All</option>
+ <% nation.map((x)=>{ %>
+<option><%=x.name%></option>
+<% }) %>
+ </select>
+ <select  class="custom-select" name="state">
+ <option>All</option>
+ <% nation.map((x)=>{ 
+x.name.match(new RegExp(`^${country}$`,"i")) && x.states.map((s)=>{%>
+<option><%=s%></option>
+<% })
+}) %>
+ </select>
+ <select class="custom-select" name="gender">
+<option>Both</option>
+<option>Males</option>
+<option>Females</option>
+ </select>
+ </div>
+</div>
+<div  class="form-group mt-4">
+<label  class="small">Age-range (from | to) / Status</label>
+ <div  class="input-group">
+ <select  class="custom-select" name="age_from">
+ <option>Any</option>
+ <option>5 years</option>
+ <option>7 years</option>
+ </select>
+ <select  class="custom-select" name="age_to">
+ <option>Any</option>
+ <option>10 years</option>
+ <option>11 year</option>
+ </select>
+ <select  class="custom-select" name="status">
+ <option>Both</option>
+ <option>Online</option>
+ <option>Offline</option>
+ </select>
+ </div>
+</div>
+<div>
+<button  class="btn bg-mylightmain text-light mx-auto d-block mt-3"><i  class="fa fa-search"></i> Search</button>
+     </div>
+</form>
+
+
+<div  class="py-3 m-0 d-flex justify-content-center flex-wrap" >
+
+<% if(members.length === 0){ %>
+<center class="h5 my-3 text-secondary">(No member)</center>
+<%}
+  else {%>
+  
+<% members.forEach(member=>{ %>
+
+<div  class="friend-cont mx-1 my-1 d-flex align-items-center bg-white p-2 shadow-sm rounded">
+<a href= "<%=member.pic_link%>">
+<img src= "<%=member.pic_link%>" class="rounded-circle" alt="profile pic" style="border: <%=(isMember&&String(member._id)==String(req.session.user._id))?'2px solid var(--mylightmain)':''%>"/>
+</a>
+<a href="/profile_page/?user_id=<%=member._id%>" class="m-0 d-flex flex-wrap ml-2 btn p-0 text-left">
+<h5 class="name d-block ">
+  <%=member.fname+" "+member.lname%>
+</h5>
+<span class="name d-block p-0 small"><i  class="fa fa-user"></i> <%=member.username%>&nbsp; 
+(<%=member.gender.substr(0,1)%>)&nbsp;
+(<%=(new Date().getFullYear()-member.year+" years")%>)&nbsp;
+<%if(onlineLimit>(Date.now()-member.last_seen)){%>
+<b class="text-success">(Online)</b>
+<%} else {%>
+<i class="text-secondary">(Offline)</i>
+<%}%>
+</span>
+<span class="name d-block p-0 small">
+<i class="fa fa-flag"></i> (<%=member.country%>) / (<%=member.state%>)
+</span>
+   </a>
+  </div>
+<% }) 
+} %>
+</div>
+
+
+<div  class="clearfix my-5 mr-1">
+	<ul  class="pagination float-right">
+	<li  class="page-item active">
+	<a  class="page-link" href= "#">1</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">2</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">3</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">4</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">5</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link">...</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">100</a>
+	</li>
+</ul>
+	</div>
+
+</div>
+<!-- left end -->
+
+
+
+
+
+<!-- USER CONTAINER-->
+
+
+
+
+<div class="col-md-3">
+<!-- advert -->
+<script async="async" data-cfasync="false" src="//pl16271370.performancetrustednetwork.com/23577b6422af37181eee0497a4a3d995/invoke.js"></script>
+<div id="container-23577b6422af37181eee0497a4a3d995"></div>
+	  
+	</div>
+	
+	
+	
+	</div>
+	</div>
+<!-- END-->
+
+
+
+
+	  
+
+
+	
+<%- include("includes/fixed_btn.html") %>
+
+<%- include("includes/footer.html") %>
+</main>
+
+
+ <script>
+ 
+
+ 
+ function scroll(){
+ $("#go-up-btn").css("display", "none")
+if(pageYOffset < 400){
+$("#go-up-btn").css("display", "none")
+}
+else{
+$("#go-up-btn").css("display", "flex")
+  }
+}
+
+
+
+$(function(){
+    
+$("#eye").click(function(){
+if($(this).hasClass("fa-eye")){
+$(this).removeClass("fa-eye")
+.addClass("fa-eye-slash");
+$(this).prev().attr("type", "text");
+}
+else{
+$(this).removeClass("fa-eye-slash")
+.addClass("fa-eye");
+$(this).prev().attr("type", "password");
+}
+$(this).prev().focus()
+})
+
+
+$("select[name='country']").change(function(){
+    
+$("select[name='state'] option:not(:first-child)").remove();
+
+ countries.forEach((c,ci)=>{
+ if(c.name===this.value){
+ c.states.map(s=>{
+$("select[name='state']")
+.append(`<option>${s}</option>`)
+});
+}
+ });
+ 
+})  
+
+
+
+
+	})
+	
+	
+
+	</script>
+	</body>
+ </html>
+ 

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+ <head>
+	 <title>Reset your <%=brandName%> password</title>
+	 <meta name= "viewport" content= "width=device-width; initial-scale=1.0">
+	 <meta charset="UTF-8"/>
+	 <style>
+	 html{ 
+	 --mymain: hsla(0, 100%, 27%, 1);
+	 }
+	 body{
+	   font-family: arial;
+	   background: #eee; 
+	 }
+	 div#cont{
+	 overflow: hidden; 
+	 background: white;
+	 color: #333;
+	 padding: 20px 10px;
+	 border-top: 5px solid var(--mymain);
+	 max-width: 500px;
+	 margin: auto; 
+	 }
+	 button {
+	 background: var(--mymain);
+	 color: #fff;
+	 border-radius: 2px; 
+	 text-decoration: none;
+	 display: block; 	 
+	 border: none;
+	 padding: 10px 50px;
+	 font-size: 1em;
+	 margin: 40px auto; 
+	 box-shadow: 1px 1px 1px #aaa
+	 }
+	 hr{
+	 border-color: rgba(0, 0, 0, 0.1)
+	 }
+	 form > div{
+	   margin: 2px 5px 20px ; 
+	   display: flex;
+	   flex-flow: row wrap;
+	 }
+	 form label{
+	   padding-left: 8px; 
+	   color: #555
+	 }
+	 form input{
+	   width: 100%;
+	   border-radius: 3px; 
+	   padding: 10px 5px; 
+	   border: 1px solid #888;
+	   outline: none;
+	 }
+	 form input:focus{ 
+	   border: 1px solid rgba(0,100,200,1); 
+	   box-shadow: 0 0 0px 3px rgba(0,100,200,0.7);
+	 }
+	 .error{
+	   color: red;
+	   font-size: 0.8em;
+	   margin-top: 3px 
+	 }
+	</style>
+ </head>
+	 <body>
+	 
+	<div id="cont">
+	  <center>
+	<h5 style="color:green"><%=success%></h5>
+<h3>Reset your <%=brandName%> password</h3>
+	<hr>
+	<b>Note:</b> This page will expire in 20 minutes.
+	</center>
+<br><br>
+<form method="post" action="<%=link%>">
+  <label>Choose new password</label>
+  <div >
+    <input type="password" name="pass" placeholder="Choose password..." value="<%=pass%>">
+    <div class="error"><%-pass_error%></div>
+  </div>
+    <label >Confirm password</label>
+  <div  >
+    <input type="password" name="cpass" placeholder="Confirm password..." value="<%=cpass%>">
+    <div class="error"><%-cpass_error%></div>
+  </div>
+	<button type="submit">Submit</button>
+</form>
+	</div> 
+	 </body>
+ </html>

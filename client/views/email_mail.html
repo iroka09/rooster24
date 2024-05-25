@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+ <head>
+	 <title>Complete <%=brandName%> registration</title>
+	 <meta name= "viewport" content= "width=device-width; initial-scale=1.0">
+	 <meta charset="UTF-8"/>
+	 <style> 
+	 body{   
+	   font-family: arial;
+	   background: #ddd;
+	 }
+	 div#cont{
+	 overflow: hidden; 
+	 background: white;
+	 text-align: center; 
+	 color: #333;
+	 padding: 10px;
+	 border-top: 5px solid hsla(0, 100%, 27%, 1);
+	 }
+	 a {
+	 background: hsla(0, 100%, 27%, 1);
+	 color: #fff;
+	 border-radius: 2px; 
+	 text-decoration: none;
+	 display: inline-block; 	 
+	 border: none;
+	 padding: 10px;
+	 font-size: 1em;
+	 box-shadow: 0 5px 5px -5px #aaa;
+	 text-shadow: 1px 1px 2px #222; 
+	 }
+	 a:active{
+	   background: hsla(0, 100%, 20%, 1);
+	 }
+	 hr{
+	 border-color: rgba(0, 0, 0, 0.1)
+	 }
+	</style>
+ </head>
+	 <body>
+	  
+	<div id="cont">
+	  <img src="<%=url%>/favicon.ico" style="height: 70px; width:70px; display:block; margin: 10px auto;"/>
+	<h3>Complete your <%=brandName%> registration</h3>
+	Click the button below to complete your registration.<br><br>
+	<hr>
+	<b>Note:</b> The confirmation link expires in <%=pendingUserDeleteTime/(1000*60)%> minute(s).
+<br><br>
+<br>
+<br>
+	<a href= "<%=link%>">Complete registration</a>
+	
+	</div>
+	
+	 </body>
+ </html>

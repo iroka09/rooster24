@@ -1,0 +1,71 @@
+
+<style>
+#logo{
+ height: 50px;
+ }
+#head{
+ background: var(--mymain);
+ display: flex;
+ justify-content: space-between; 
+ align-items: center;
+ padding: 10px 15px;
+ color: #ccc;
+}
+</style>
+
+
+
+
+ <noscript class= "alert alert-danger">
+	 Your browser does not support javascript.
+	<hr> 
+	<b>Note:</b> This page will not work normal in your browser and there are a lot of things you can not be able to do due to no support of javascript. <br>Please upgrade to higher browser.
+	 </noscript>
+
+<header>
+<div class="d-flex justify-content-between pr-4 align-items-center bg-white">
+<a href= "/"  class="d-block my-1">
+<img id="logo" src= "/favicon.ico" alt= "logo"  class="ml-3"/>
+<h5 class="d-inline text-muted"><%=brandName%></h5>
+</a>
+
+<div class="d-flex">
+<a href= "#"  class="fa fa-envelope text-muted border p-2 rounded mr-3"></a>
+<a href= "/members"  class="fa fa-users text-muted border p-2 rounded text-danger "></a>
+</div>
+</div>
+
+<!-- =====  Head ===== -->
+	<div id="head" class="">
+	<%if(path!=="/"){%>
+	<a href="/" class="round-btn btn"><i class="fa fa-home"></i> Home</a>
+	<%}
+	else if(path==="/" && isMember){%>
+	<a href= "/logout" class="bg-warning text-dark round-btn btn"><i class="fa fa-sign-out fa-flip-horizontal"></i> Logout</a>
+	<%}
+	else {%>
+	<a href= "/register" class="round-btn btn">Register</a>
+<%}%>
+	
+<% if(isMember) { 
+//MEMBER
+if(isMe && path.match(/^\/profile_page\/?/)) {%>
+	<a href= "/logout" class="btn round-btn bg-warning text-dark"><i  class="fa fa-sign-out fa-flip-horizontal"></i>&nbsp; Logout</a>
+<%	}
+	else { %>
+	<a href= "/profile_page" class="round-btn btn"><i  class="fa fa-user-circle"></i>&nbsp; <%=req.session.user.username%></a>
+<%	}
+   }
+   //NOT MEMBER
+else { 
+    if(path.match(/^\/login\/?/)) {%>	
+    <a href= "/register" class="btn round-btn">Register</a>
+<% }
+    else { %>
+     <a href= "/login" class="btn round-btn"><i  class="fa fa-sign-in"></i>&nbsp; Login</a>
+<% }
+  } %>
+	
+	</div>
+	
+	</header>

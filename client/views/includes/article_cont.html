@@ -1,0 +1,21 @@
+
+
+<a href= "/article/?art_id=<%=art._id%>" class="btn btn-block p-0 art-btn" style="box-shadow: none">
+<ul  class="ul-clear article-cont shadow-sm overflow-hidden my-0">
+<li  class="article-img-cont">
+  <img src="/article/image/thumb/?icon=1&art_id=<%=art._id%>" alt="image"/>
+</li>
+<li  class="article-title-cont pl-1 text-dark">
+	<h5 class="align-items-center">
+<%=art.title%>
+  </h5>
+	<div class="small text-mylightmain pb-1">
+	<b class="fa fa-history"></b> 
+	<%= moment(art.timestamp).tz(ipLoc.time_zone).fromNow()%>&emsp;
+	  <b  class="fa fa-eye"></b> <%=art.views.length%>&emsp;
+  <b class="fa fa-user"></b> <%=art.owner&&art.owner.username%>&emsp;
+	(<%=art.category%>)
+ </div>
+	 </li>
+	</ul>
+</a>

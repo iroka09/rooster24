@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+ <head>
+	 <title>Reset <%=brandName%> password</title>
+	 <meta name= "viewport" content= "width=device-width; initial-scale=1.0">
+	 <meta charset="UTF-8"/>
+	 <style>
+	 html{ 
+	 --mymain: hsla(0, 100%, 27%, 1);
+	 }
+	 body{
+	   font-family: arial;
+	   background: #eee;
+	 }  
+	 div#cont{
+	 overflow: hidden; 
+	 background: white;
+	 color: #333;
+	 padding: 20px 10px;
+	 border-top: 5px solid var(--mymain); 
+	 max-width: 500px;
+	 margin: auto; 
+	 }
+	 button {
+	 background: var(--mymain);
+	 color: #fff;
+	 border-radius: 2px; 
+	 text-decoration: none;
+	 display: block; 	 
+	 border: none;
+	 padding: 10px 50px;
+	 font-size: 1em;
+	 margin: 40px auto; 
+	 box-shadow: 1px 1px 1px #aaa
+	 }
+	 button:active{
+	   filter: brightness(80%);
+	 }
+	 hr{
+	 border-color: rgba(0, 0, 0, 0.1)
+	 }
+	 form > div{
+	   margin: 2px 5px 20px ; 
+	   display: flex;
+	   flex-flow: row wrap;
+	 }
+	 form label{
+	   padding-left: 8px; 
+	   color: #555
+	 }
+	 form input{
+	   width: 100%;
+	   border-radius: 3px; 
+	   padding: 10px 5px; 
+	   border: 1px solid #888;
+	   outline: none;
+	 }
+	 form input:focus{ 
+	   border: 1px solid rgba(0,100,200,1); 
+	   box-shadow: 0 0 0px 3px rgba(0,100,200,0.7);
+	 }
+	 .error{
+	   color: red;
+	   margin-top: 1px; 
+	   font-size: 0.9em;
+	 }
+	 .success{
+	   color: #080;
+	   font-size: 0.95em;
+	 }
+	</style>
+ </head>
+	 <body>
+	 
+	<div id="cont">
+<center><h2>Reset Password</h2></center>
+	 <h3 style="margin: 20px 5px"><a href="/login"><< Back</a></h3>
+<form action="/login/forgot_pass">
+  <input name="sub" value="true" hidden style="display:none">
+  <br>
+<center class="success"><%-success%></center>
+  <br>
+  <label >Email address</label>
+  <div >
+    <input name="email" placeholder="Enter your email..." value="<%=email%>" type="email">
+    <div class="error"><%-email_error%></div>
+  </div>
+	<button type="submit">Submit</button>
+</form>
+	</div> 
+	
+	 </body>
+ </html>

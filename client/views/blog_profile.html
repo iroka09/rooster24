@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html >
+ <head>
+	 <title>Profile</title>
+	 <meta name= "description" content= "News.">
+<%- include("includes/libraries_tags.html") %>
+ </head>
+
+	 <body onscroll= "scroll()">	 
+	<main>
+<%- include("includes/header.html") %>
+	
+	
+	
+	
+	<!--  ==== FLEX CONT === -->
+	<div  class="flex-cont p-0 mt-3">
+
+	
+	<!-- === col right === -->
+	<div  class="container-md">
+
+
+<ul  class="d-flex justify-content-center flex-column text-center ul-clear">
+  <%if(isMe && member.isAdmin){%>
+  <li >
+    <a href="/admin_page" class="d-inline-block btn btn-white border mb-3">Admin Page</a>
+  </li>
+  <%}%>
+<li>
+<div class="d-inline-block position-relative rounded-circle" id="img-cont">
+<a href= "<%=member.pic_link%>">
+	<img src= "<%=member.pic_link%>"  class="rounded-circle img-thumbnail mx-auto d-block" style= "width: 60vw; height: 60vw;  max-width: 200px; max-height: 200px" id="img" />
+	</a>
+<% if(isMe){%>
+	<a class="fa fa-camera fa-lg position-absolute d-flex border rounded-circle p-4 justify-content-center align-items-center shadow-sm btn btn-light text-primary overflow-hidden" style= "right:0px; bottom: 8%; height: 30px; width: 30px">
+	  <input type="file" accept="image/*"  class="position-absolute" style="right:0; bottom:0; z-index:1; opacity:0" id="image-upload"/>
+	</a>
+<%}%>
+	</div>
+	</li>
+	<li >
+	  <span id="upload-error" class="text-danger small px-2"></span>
+	</li>
+<li>	
+<h4 class="mt-3"><%= member.fname+" "+member.lname%></h4>
+</li>
+<li>
+<span class="text-muted w-75 d-inline-block mt-2">
+<%= member.bio %>
+</span>
+</li>
+<li>
+<a href= "/all_articles/?owner_id=<%=member._id%>&theme=<%=member.theme%>" class="btn bg-mylightmain text-light m-2 shadow-sm"><i  class="fa fa-pencil-square-o"></i> &nbsp; Articles (<%=member.articles.length%>)</a>
+<%if(!isMe && isMember){%>
+<a href= "#"  class="btn bg-mylightgray text-dark m-2"><i  class="fa fa-envelope"></i> &nbsp; Message</a>
+<%}
+if(isMe){%>
+<a href= "#"  class="btn bg-mylightgray text-dark m-2"><i  class="fa fa-envelope"></i> &nbsp; Messages</a>
+<%}%>
+</li>
+<%if(isMe){%>
+<li  class="mt-4 mb-3">
+	  <ul class="d-inline-block p-3 small text-dark bg-light mb-3 mx-4">
+	 <%if(!allowPayment){%>
+	 <li>
+	   <span class="text-danger">Payment is not available right now but you can keep earning and get paid when payment is available
+	   </span>
+	 </li>
+	 <%}%>
+	 <li >We pay you <%=currency%><%=paymentPerView%> for every click on your article, this can change in future.</li>
+	    </ul>
+	</li>
+<li>
+	  	<b>Balance:</b>&nbsp; 
+<i><b  style= "color: #f70"><b class="text-muted"><%=currency%></b> <%=(member.balance<=1)?member.balance.toFixed(fix):member.balance.toLocaleString("en")%></b> <br/> 
+<button data-toggle="modal" data-target="#withdrawal-modal" class="btn alert-warning shadow-sm text-muted mt-3">Withdraw</button>
+</i>
+	</li>
+<%}%>
+</ul>
+
+	  
+	
+	<div  class="p-3 bg-mylightgray">
+	<div  class="d-flex justify-content-center">
+	  <%if(isMe){%>
+		<a href= "#" style= "border: 2px solid var(--mylightmain)"  class="mb-3 py-1 px-4 btn text-mylightmain bg-white round-btn"><i  class="fa fa-edit"></i> Edit profile</a>
+		<%}%>
+	</div>
+	<ul  class="bg-white rounded container py-2 ul-style-none">
+ <%if(!isMe){%>
+	<li  class="py-2">
+<b>Status/Last seen:</b>&emsp; 
+
+<% let status =
+(onlineLimit > Date.now()-member.last_seen) ?
+"Online" : 
+moment(member.last_seen).tz(ipLoc.time_zone).fromNow() %>
+
+<i  class="text-<%= (status==="Online")?"success":"secondary" %>">
+<%= status %>
+    </i>
+	</li>
+<%}%>   
+	<li  class="py-2">
+<b>Username:</b>&emsp; 
+<i><%= member.username %></i>
+	</li>
+	<%if(!member.isAdmin || isMe){
+	//only for user that is not an admin, and an admin viewing his own
+	%>
+	<li  class="py-2">
+<b>Email:</b>&emsp;
+<i><a href= "mailto:<%= member.email %>"><%= member.email %></a></i>
+	</li>
+	<%}%>
+	<li  class="py-2">
+<b>Gender:</b>&emsp; 
+<i><%= member.gender %></i>
+	</li>
+	<li  class="py-2">
+<b>Birth:</b>&emsp; 
+<i><%= member.date+"/"+member.month+"/"+member.year %></i>
+	</li>
+	<li  class="py-2">
+<b>Country:</b>&emsp; 
+<i><%= member.country %></i>
+	</li>
+	<li  class="py-2">
+	<b>State:</b>&emsp; 
+<i><%= member.state %></i>
+	</li>
+	<!--
+	<li  class="py-2">
+	<b>Phone:</b>&emsp; 
+<i><a href="tel:<%= member.phone %>">
+    <%= member.phone %></a></i>
+	</li>
+	-->
+<%if(isMe){%>
+<!--
+	<li  class="py-2">
+	<b>Referral ID:</b>&emsp; 
+<i><%= member.referral_id %></i>
+	</li>
+	-->
+<%}%>
+	<li  class="py-2">
+	<b>Occupation:</b>&emsp; 
+<i><%= member.occupation %></i>
+	</li>
+	<li  class="py-2">
+<b>Joined since:</b>&emsp; 
+<i  class="text-secondary">
+<%= moment(member.timestamp).tz(ipLoc.time_zone).format("D/MMM/YYYY ha")%>
+    </i>
+	</li>
+	</ul>
+</div>
+
+
+	  <!-- Advert -->
+
+
+
+<% if(!isMe && isMember){
+let blocked_list = req.session.user.blocked_list %>
+	<div  class="d-flex justify-content-end align-items-center py-4 px-1">
+		<span class="btn btn-light small py-0 px-2 border text-muted mr-2" data-toggle= "tooltip" title= "Note: When you block someone, both of you cannot create conversation but can do other things together." data-placement= "top" >
+	  Read Me</span>
+<%if(blocked_list.includes(member._id)){%>
+	<a href= "/unblock/<%=member._id%>"  class="btn btn-warning mx-1 small shadow-sm">Unblock</a>
+	<%} 
+	else {%>
+	<a href= "/block/<%=member._id%>"  class="btn btn-warning mx-1 small shadow-sm">Block</a>
+	<%}%>
+	</div>
+<% }
+  else if(isMember) { %>
+  		<hr/>
+	<div class="my-3">
+<h5 class="text-danger text-center py-3">
+Danger Zone</h5>
+<hr>
+<div class="d-flex justify-content-end">
+<a href="/logout_from_all_devices" class="btn btn-light shadow-sm m-1 font-size-80 py-1">Logout from all devices</a>
+<button href="/delete_account" class="btn btn-danger m-1 ml-1 smal py-1 font-size-80 shadow-sm" data-toggle ="modal" data-target="#mymodal">
+Delete Account
+</button>
+</div>
+</div>
+<%}%>
+
+
+<!-- advert -->
+
+
+
+
+
+
+	</div>
+	
+	     </div>
+		<!-- === flex ended === -->
+	</div>
+	
+	
+	<!-- delete MODAL -->
+<div class="modal fade text-muted" id="mymodal">
+ <div  class="modal-dialog modal-dialog-centered modal-sm">
+ <div  class="modal-content">
+   
+ <div  class="modal-header">
+ <h4 class="modal-title">Delete Account</h4>
+ <button class="close" data-dismiss= "modal" style="font-size: 2em">&times;</button>
+ </div>
+ <div  class="modal-body">
+  <center id="deletion-error" class="text-danger"></center>
+  <center id="deletion-success" class="text-success"></center>
+ <ul class="text-danger p-2 small" id="deletion-warn">
+   <li>If you delete your account, you will lose your earned money and all your articles, comments, likes and all your activities will be deleted.</li>
+   <li>If you click proceed you can't undo the process.</li>
+ </ul>
+ <form method="post" action="/delete_account" id="deletion-form" class="my-3">
+   <input type="password" class="form-control" name="pass" placeholder="Enter your password..." required/>
+ </form>
+ </div>
+ <div  class="modal-footer">
+  <button class="btn btn-light ml-auto mr-2 shadow-sm" data-dismiss= "modal" >Cancel</button>
+  <button type= "submit" class="btn btn-danger shadow-sm" form="deletion-form" id="deletion-btn">Proceed</button>
+       </div>
+ </div>
+ </div>
+ </div>
+	
+	
+	
+	
+	<!-- withdraw MODAL -->
+<div class="modal fade text-muted" id="withdrawal-modal">
+ <div  class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm">
+ <div  class="modal-content">
+ <div  class="modal-header">
+ <h4 class="modal-title">Withdrawal</h4>
+ <button class="close" data-dismiss= "modal" style="font-size: 2em">&times;</button>
+ </div>
+ <div  class="modal-body">
+ <div class="text-info px-2 text-center small">
+  <i>We only pay in <%=countryPayment%>, this may change in future.</i>
+ </div>
+ <% 
+ const bal = member.pendingWithdrawal
+ if(bal.length > 0){ %>
+ <div class="text-center my-3 bg-light shadow-sm mx-5">
+<b><%=currency%></b>
+<%=Number(bal[0]).toLocaleString("en")%> 
+<% if(bal[1]==="pending"){%>
+<i class="small text-warning">pending</i> 
+<%}
+else if(bal[1]==="paid"){%>
+   <i class="small text-success">paid</i> 
+   <%}%>
+   <br>
+   <i ><b class="text-muted">placed since:</b> 
+   <%=moment(bal[2]).tz(ipLoc.time_zone).fromNow()%></i>
+ </div>
+ <%}
+ else {%>
+ <center class="py-3 text-muted font-italic small">(You don't have any pending withdrawal)</center>
+<%}%>
+   <ul class="small pl-3">
+ <li>You can only withdraw minimum of <%=currency%><%=minWithdraw.toLocaleString("en")%> and maximum of <%=currency%><%=maxWithdraw.toLocaleString("en")%> for now.</li>
+ <li>We pay our members maximum of one week after placing withdrawal.</li>
+  <li><span class="text-danger">If you didn't get paid after maximum of one week of placing withdrawal</span> <u><a href="mailto: <%=contactEmailAddress%>?subject=<%=brandName%> Withdrawal Problem">
+    CONTACT&nbsp;US</a></u></li>
+  <li><span class="text-danger">NOTE: Your mail subject must be "<%=brandName%>&nbsp;Withdrawal&nbsp;Problem" otherwise we may not respond.</span></li>
+  <li >If your bank account doesn't match with your bank name or account name, you won't get paid until your correct it.</li>
+   </ul> 
+ <form id="withdrawForm" class="my-3" method="post" action="/update_profile/bank_account">
+   <div class="form-group">
+     <label for="acc_name">Account Name</label>
+   <input class="form-control" name="account_name" id="acc_name" value="<%=member.account_name%>" required/>
+   </div>
+   <div class="form-group">
+     <label for="bank_name">Bank Name</label>
+   <select class="custom-select" name="bank_name" id="bank_name" required>
+  <option hidden>Select your bank</option>
+  <%ngBanks.forEach(({name})=>{%>
+ <option <%=(member.bank_name.toLowerCase().trim()===name.toLowerCase().trim())?"selected":""%>>
+   <%=name.trim()%>
+ </option>    
+ <%})%>
+   </select>
+   </div>
+   <div class="form-group">
+     <label for="acc_number">Account Number</label>
+   <input class="form-control" name="account_number" id="acc_number" value="<%=(member.account_number)?member.account_number:""%>" type="number" required/>
+   </div>
+   <div class="form-group">
+     <label for="amount">Amount (<%=currency%>)</label>
+   <input class="form-control" name="amount" id="amount" type="number" min="1000" max="50000" required/>
+   </div>
+ </form>
+   <div class="text-info text-center small">By clicking "place withdrawal", you accepted all the above conditions.</div>
+</div>
+ <div class="modal-footer pt-0">
+    <div class="font-italic text-center text-success w-100 small" id="submit_success"></div>
+ <div class="font-italic text-center text-danger w-100 small" id="submit_error"></div>
+     <button class="ml-auto btn btn-light shadow-sm text-dark  font-size-80" onclick="editProfile(this)">Cancel Withdrawal</button>
+  <button class=" btn btn-success  font-size-80" onclick="editProfile(this,'bank_account')">Place Withdrawal</button>
+       </div>
+ </div>
+ </div>
+ </div>
+	
+	
+<%- include("includes/fixed_btn.html") %>
+
+<%- include("includes/footer.html") %>
+	
+</main>
+
+
+
+
+
+
+
+ <script>
+ 
+
+ const bytes = require("bytes");
+ 
+ 
+ //== edit profile 
+ let shouldSubmit = true; 
+ 
+ async function editProfile(btn,type="cancel_withdrawal"){
+ if(shouldSubmit === false) return;
+ shouldSubmit = false; 
+ const btnName = $(btn).text();
+ const modal = $(btn).parents(".modal");
+ modal.find("#submit_success, #submit_error").html("");
+ $(btn).html("<i class='spinner-border spinner-border-sm'></i> &nbsp;Processing...");
+ const form = $("#withdrawForm")[0];
+ let obj = {};
+ //note cancel Withdrawal doesn't allow FormData foreach loop
+ if(type!=="cancel_withdrawal"){
+new FormData(form)
+.forEach((val,key)=>{
+  obj[key] = val.trim()
+})
+}
+try{
+  let data = await fetch("/update_profile/"+type, {
+    method: "post",
+    body: JSON.stringify(obj),
+    headers: {
+      "content-type": "application/json",
+    },
+    cache: "no-cache",
+   // credentials: "include",
+  //  mode: "cors"
+  });
+  data = await data.json();
+    if(data.error) {
+      throw data;
+    }
+  modal.find("#submit_success")
+    .html("<i class='fa fa-check'></i> &nbsp;"+data.result+"<br/>(refresh your page to see the update)");
+ }
+  catch(e){
+   console.log(e)
+    modal.find("#submit_error").html(e.error||e);
+  }
+  finally{
+    shouldSubmit = true; 
+    $(btn).text(btnName)
+  }
+ }
+ 
+ //======
+
+ 
+ $(function(){
+ //=== delete account
+let allowSubmit = true
+let query = "?type=delete"
+$("#deletion-form").submit(function(event){
+  try{
+  event.preventDefault();
+  if(allowSubmit===false) return; 
+  allowSubmit = false
+  $("#deletion-error").text("");
+  $("#deletion-success").text("");
+  let btnText = $("#deletion-btn").html();
+  $("#deletion-btn").html(`
+  <i class="spinner spinner-border spinner-border-sm"></i>
+  `);
+  let formData = new FormData(event.target);
+  let url = $(event.target).attr("action");
+  fetch(url, {
+    method: "post",
+    credentials: "same-origin",
+    cache: "no-cache",
+    mode: "same-origin",
+    body: formData
+  })
+  .then(x=>x.json())
+  .then(x=>{
+   // alert(JSON.stringify(x))
+    if(x.error !== false) throw x;
+    $("#deletion-success").html(`Your account will be deleted <b>${moment(Date.now()+x.DaysForAccountDeletion).calendar()}</b>.`);
+     $("#deletion-btn, #deletion-warn, #deletion-form").remove()
+  })
+  .catch(e=>{
+    if(e.error===true){
+    $("#deletion-error").html("("+e.msg+")");
+    }
+    else {
+    $("#deletion-error").text("Something went wrong.")
+    }
+  })
+  .finally(()=>{
+    allowSubmit = true
+    $("#deletion-btn").text(btnText);
+  })
+  }
+  catch(e){
+    alert(e)
+  }
+})
+
+ 
+ //=====
+ 
+ 
+ 
+ 
+//===== upload Image
+$("#image-upload").change(function(event){
+  const ele = event.target;
+  try{
+  loading("#img-cont")
+if(ele.files[0].size > bytes("500kb")){
+  throw {error: "< Can't upload an image that's more than 500KB size. >"} 
+}
+const form = new FormData();
+form.append("img", ele.files[0]);
+$("#upload-error").text("")
+fetch("/upload_profile_pic", {
+  method: "post",
+  body: form, 
+  //credentials: "include",
+  //mode: "cors",
+})
+.then(x=>x.json())
+.then(x=>{
+  if(x.error) throw x;
+  $("#img").attr("src", x.data+"/?t="+Date.now())
+  .parent().attr("href", x.data);
+})
+.catch(e=>{
+$("#img-cont").waitMe("hide");
+ if(e.error){
+  $("#upload-error").text("("+e.error+")")
+  }
+  else {
+    $("#upload-error").text("(SERVER ERROR.)");
+  }
+  let errorDiv = $("#upload-error")[0];
+   vibrateDiv(errorDiv)
+ });
+  }
+  catch(e){
+   $("#img-cont").waitMe("hide");
+  if(e.error){
+    $("#upload-error").text(e.error)
+  }
+   else {
+     $("#upload-error").text(e.stack||e)
+   }
+   let errorDiv = $("#upload-error")[0];
+   vibrateDiv(errorDiv)
+  }
+})
+//====
+
+//==== remove loader after loading image
+$("#img").on("load", function(){
+  $("#img-cont").waitMe("hide");
+});
+
+	})
+//== jQuery end
+	
+
+
+
+
+
+
+function loading(which){
+    $(which).waitMe({
+	// rotateplane, stretch, orbit, roundBounce, win8, win8_linear, ios, facebook, rotation, timer, pulse, progressBar, bouncePulse or img
+
+effect:  "win8",
+//place text under the effect (string).
+text: "",
+//background for container (string).
+bg: "rgba(225,225,225,0.6)",
+//color for background animation and text (string)
+color: "black",
+//max size
+maxSize: 50,
+//wait time in ms to close, -1 for infinity
+waitTime:  -1,
+//url to image
+source:  "",
+//or 'horizontal'
+textPos: "vertical",
+sizeW: "200px",
+sizeH: 100,
+//font size
+fontSize: "15px",
+	});
+}
+
+
+
+function vibrateDiv(ele){
+    anime({
+        targets: ele,
+        loop: 5,
+        direction: "alternate",
+        translateX: [-6, 6, 0],
+        duration: 100,
+        easing: "linear",
+        rotate: [-2, 2, 0]
+    })
+}
+
+
+ function scroll(){
+ $("#go-up-btn").css("display", "none")
+if(pageYOffset < 400){
+$("#go-up-btn").css("display", "none")
+}
+else{
+$("#go-up-btn").css("display", "flex")
+  }
+}
+
+
+	</script>
+	</body>
+ </html>
+ 

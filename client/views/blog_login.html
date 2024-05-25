@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html >
+ <head>
+	 <title>Login</title>
+	 <meta name= "description" content= "News.">
+<%- include("includes/libraries_tags.html") %>	
+	
+ </head>
+	 <body style= "background: var(--mylightgray)"> 
+<main>
+	 
+<%- include("includes/header.html") %>
+	
+		  
+		
+	 
+<div  class="container" style="max-width: 400px">
+  
+<h4 class="text-center py-4 text-mylightmain">Login</h4>
+
+
+
+<div class="small text-danger my-1 text-center error"><%=error%></div>
+
+<form  id="form" class="bg-white rounded container  mb-5 pb-4" method="post" action="/login">
+<div>
+<label  class="form-label mt-4 text-mylightmain">Username</label>
+<input  class="form-control" name= "username" value="<%=username%>" required>
+</div>
+<div>
+<label  class="form-label mt-4 text-mylightmain">Password</label>
+<div  class="position-relative">
+<input class="form-control" type="password" value="<%=pass%>" name="pass" required/>
+<i  class="fa fa-eye btn position-absolute text-muted" style= "right:0; top:0"  id="eye"></i>
+</div>
+</div>
+<div  class="d-flex">
+<button id="btn"  class="btn text-light mt-4 px-5 mx-auto" style= "background: var(--mylightmain)">Login</button>
+</div>
+<a href= "/login/forgot_pass"  class="mt-5 d-inline-block">Forgot password?</a>
+</form>
+
+</div>
+
+
+
+<!-- advert -->
+
+
+
+
+
+<%- include("includes/footer.html") %>
+</main>
+
+
+ <script>
+ 
+
+ 
+ function scroll(){
+ $("#go-up-btn").css("display", "none")
+if(pageYOffset < 400){
+$("#go-up-btn").css("display", "none")
+}
+else{
+$("#go-up-btn").css("display", "flex")
+  }
+}
+
+
+
+$(function(){
+//show password
+$("#eye").click(function(){
+if($(this).hasClass("fa-eye")){
+$(this).removeClass("fa-eye")
+.addClass("fa-eye-slash");
+$(this).prev().attr("type", "text");
+}
+else{
+$(this).removeClass("fa-eye-slash")
+.addClass("fa-eye");
+$(this).prev().attr("type", "password");
+}
+$(this).prev().focus()
+})
+
+//login ajax
+let allowSubmit = true
+$("form#form").submit(function(event){
+  try{
+  event.preventDefault();
+  if(allowSubmit===false) return; 
+  allowSubmit = false
+  $(".error").text("");
+  let btnText = $("#btn").html();
+  $("#btn").html(`
+  <i class="spinner spinner-border spinner-border-sm"></i>
+  `);
+  let formData = new FormData(event.target);
+  formData.append("ajax", "Ajax");
+  let url = $("form#form").attr("action");
+  fetch(url, {
+    method: "post",
+    credentials: "same-origin",
+    cache: "no-cache",
+    mode: "same-origin",
+    body: formData
+  })
+  .then(x=>x.json())
+  .then(x=>{
+    if(x.error) throw x;
+    window.location.href = "/"
+  })
+  .catch(e=>{
+    if(e.error){
+    $(".error").text(e.msg);
+    }
+    else{
+    $(".error").text("Sorry something went wrong.")
+    }
+    $("#btn").text(btnText);
+  })
+  .finally(()=>{
+    allowSubmit = true
+  })
+  }
+  catch(e){
+    alert(e)
+  }
+})
+
+
+	})
+	
+	
+
+	</script>
+	</body>
+ </html>
+ 

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html >
+ <head>
+	 <title>Sign up</title>
+	 <meta name= "description" content= "News.">
+<%- include("includes/libraries_tags.html") %>
+<script src="/get_countries.js"></script>
+ <style>
+html{
+    scroll-behavior: initial;
+}
+ </style>
+ </head>
+<body onscroll= "scroll()" class="bg-mylightgray">
+<main>
+	 
+<%- include("includes/header.html") %>
+	
+	<div  class="container" style="max-width:500px">
+	<h4 class="text-center py-4 text-mylightmain">Sign up</h4>
+
+
+
+
+<form id="form" class="bg-white rounded container  mb-5 pb-4" method= "post" action= "/register">
+ <div>
+<label  class="form-label mt-4">Username * <span  class="small">(e.g John42)</span></label>
+<input  class="form-control" name= "username" value="<%= username %>" <%=err_username?"autofocus":""%>>
+<div  class="text-danger small py-1">
+<%=err_username%></div>
+</div>
+<div>
+<label  class="form-label mt-4">First Name *</label>
+<input  class="form-control" name= "fname"  value="<%= fname %>" <%=err_fname?"autofocus":""%> />
+<div  class="text-danger small py-1"><%=err_fname%></div>
+</div>
+<div>
+<label  class="form-label mt-4">Last Name *</label>
+<input  class="form-control" name= "lname"   value="<%= lname %>" <%=err_lname?"autofocus":""%>/>
+<div  class="text-danger small py-1"><%=err_lname%></div>
+</div>
+<div>
+<label class="form-label mt-4">Gender *</label>
+<select  class="custom-select" name= "gender">
+<option hidden value= "">Select gender</option>
+<option <%=gender=="Male"?"selected":""%>>Male</option>
+<option <%=gender=="Female"?"selected":""%>>Female</option>
+</select>
+<div class="text-danger small py-1"><%=err_gender%></div>
+</div>
+<div>
+<label class="form-label mt-4">Birth *</label>
+<div  class="input-group">
+<input  class="form-control w-5" type= "number" placeholder= "..." name="date"  value="<%= date %>" <%=err_date?"autofocus":""%>/>
+<select  class="custom-select" name="month">
+<% months.map((x)=>{ %>
+<option <%= x.match(new RegExp(month,"i"))?"selected":""%> value="<%=x%>"><%=x.substr(0,3).toUpperCase()%></option>
+<% }) %>
+</select>
+<select  class="custom-select" name="year">
+<% let d = new Date().getFullYear(); 
+for(x = d-5; x > d-120; x--) { %>
+<option <%=x==year?"selected":""%>><%=x%></option>
+<% } %>
+</select>
+</div>
+<div class="text-danger small py-1"><%=err_date||err_month||err_year%></div>
+</div>
+<div>
+<label  class="form-label mt-4">Email *</label>
+<input class="form-control" type= "email" name="email" value="<%= email %>" <%=err_email?"autofocus":""%>/>
+<div class="text-danger small py-1"><%=err_email%></div>
+</div>
+<div>
+<label class="form-label mt-4">Country *</label>
+<select  class="custom-select" name="country">
+<% nation.map((x)=>{ %>
+<option <%=x.name.match(new RegExp(`^${country}$`,"i"))?"selected":""%> >
+<%=x.name%></option>
+<% }) %>
+</select>
+<div class="text-danger small py-1"><%=err_country%></div>
+</div>
+<div>
+<label class="form-label mt-4">State *</label>
+<select  class="custom-select" name="state">
+<% nation.map((x)=>{ 
+x.name.match(new RegExp(`^${country}$`,"i")) && x.states.map((s)=>{%>
+<option <%= s==state?"selected":""%>>
+<%=s%></option>
+<% })
+}) %>
+</select>
+<div class="text-danger small py-1"><%=err_state%></div>
+</div>
+<!--
+<div>
+<label class="form-label mt-4">Phone *</label>
+<div  class="input-group">
+<select  class="custom-select" style= "flex:1" name="code">
+<% nation.map((x)=>{ %>
+<option <%= x.name.match
+(new RegExp(`^${country}$`,"i"))?"selected":""%>><%=x.flag%> +<%= x.code%></option>
+<% }) %>
+</select>
+<input  class="form-control w-5" type= "number" style= "flex:2" name="phone"  value="<%= phone %>" <%=(err_phone||err_code)?"autofocus":""%>>
+</div>
+<div class="text-danger small py-1"><%=err_code||err_phone%></div>
+</div>
+-->
+<div>
+<label  class="form-label mt-4">Choose password *</label>
+<input class="form-control" type= "password" name="pass"  value="<%= pass %>" <%=err_pass?"autofocus":""%>/>
+<div class="text-danger small py-1"><%=err_pass%></div>
+</div>
+<div>
+<label  class="form-label mt-4">Confirm password *</label>
+<input class="form-control" type= "password" name="cpass"  value="<%= cpass %>" <%=err_cpass?"autofocus":""%>/>
+<div class="text-danger small py-1"><%=err_cpass%></div>
+</div>
+<button id="btn" class="btn mt-5 px-5 text-light" style= "background: var(--mylightmain)">Submit</button>
+</form>
+
+	  
+
+</div>
+
+
+
+	
+<%- include("includes/fixed_scroll_btn.html") %>
+
+<%- include("includes/footer.html") %>
+	
+</main>
+ <script>
+
+ 
+ function scroll(){
+ $("#go-up-btn").css("display", "none")
+if(pageYOffset < 400){
+$("#go-up-btn").css("display", "none")
+}
+else{
+$("#go-up-btn").css("display", "flex")
+  }
+}
+
+
+
+$(function(){
+  
+  //sign-up ajax
+  /*
+  let allowSubmit = true
+$("form#form").submit(function(event){
+  try{
+  event.preventDefault();
+  if(!allowSubmit) return; 
+  let btnText = $("#btn").html();
+  $("#btn").html(`
+  <i class="spinner spinner-border spinner-border-sm"></i>
+  `);
+  let formData = new FormData(event.target);
+  formData.append("ajax", "Ajax");
+  let url = $("form#form").attr("action");
+  fetch(url, {
+    method: "post",
+    credentials: "include",
+    body: formData,
+    mode: "cors"
+  })
+  .then(x=>x.json())
+  .then(x=>{
+    if(x.error) throw x;
+    window.location.href = "/"
+  })
+  .catch(e=>{
+    if(e.error){
+    $(".error").text(e.msg);
+    }
+    else{
+    $(".error").text("Sorry something went wrong.")
+    }
+    $("#btn").text(btnText);
+  })
+  .finally(()=>{
+    allowSubmit = true
+  })
+  allowSubmit = false
+  }
+  catch(e){
+    alert(e)
+  }
+})
+*/
+
+$("select[name='country']").change(function(){
+    
+$("select[name='state']").empty();
+$("select[name='code']").empty()
+
+ countries.forEach((c,ci)=>{
+ if(c.name===this.value){
+ c.states.map(s=>{
+$("select[name='state']")
+.append(`<option>${s}</option>`)
+});
+}
+ });
+ /*
+countries.forEach((c,ci)=>{
+ $("select[name='code']")
+.append(`<option ${c.name===this.value?"selected":""}>${c.flag+" +"+c.code}</option>`);
+  })
+  */
+})  
+
+
+})
+	
+	
+
+	</script>
+	</body>
+ </html>
+ 

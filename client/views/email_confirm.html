@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+ <head>
+	 <title>verify email</title>
+	 <meta name= "viewport" content= "width=device-width; initial-scale=1.0">
+	 <meta charset="UTF-8"/>
+	 <style>
+	 body{
+	   font-family: arial;
+	   background: #ddd;
+	 } 
+	 div#cont{ 
+	 text-align: center;
+	 color: #333;
+	 overflow: hidden;
+	 max-width: 500px; 
+	 margin: 20px auto; 
+	 background: white;
+	 padding: 20px;
+	 border-left: 6px solid hsla(0, 100%, 27%, 1); 
+	 }
+	 button{
+	 padding: 8px 18px; 
+	 background: none; 
+	 border: 1px solid #aaa;
+	 color: #aaa;
+	 border-radius: 3px; 
+	 }
+	 button.active {
+	 display: none; 
+	 color: white; 
+	 background: #000;
+	 border:none;
+	 font-size: 1em;
+	 box-shadow: 1px 1px 1px #aaa
+	 }
+	 hr{ 
+	   border-color:rgba(0, 0, 0, 0.2);
+	 }
+	</style>
+ </head>
+	 <body>
+	<div id="cont"> 
+	<h2>You are almost there. </h2>
+	We just sent a confirmation link to your email <b style="color: #05c"><%=email%></b>, check your email to complete your registration. <br><br>
+<b>Note:</b> The confirmation link expires in <%=pendingUserDeleteTime/(1000*60)%> minute(s).<br><br><hr><br>
+If you didn't receive mail, click the resend button below after the 60sec count down.<br/><br/><br/>
+
+	<button  class="disabled">Resend link in&emsp;<span  style="color:tomato;font-size:1.9em;vertical-align: middle">60</span>sec</button>
+	
+	<button  class="active "onclick= "send()">Resend</button>
+	
+	<div  id="success" style= "font-size: 1em; color: green;  margin-top: 7px"></div>
+	<div  id="error" style= "font-size: 0.8em; color: red;  margin-top: 7px"></div>
+	
+	
+	
+	
+	<a href="/register/cancel" style="display: inline-block; margin-top: 80px; color: #07c">Cancel registration</a>
+	
+	
+	</div>
+	
+	
+	
+	
+	
+	<script>
+	
+	
+	let disabledButton  = document.querySelector("button.disabled");
+	
+	let enabledButton  = document.querySelector("button.active");
+	
+	let span = disabledButton.querySelector("span");
+	
+	
+	function initialize(){
+	let n = 60;
+	let interval = setInterval(()=>{
+	 span.innerText = n; 
+	 if(n===0){
+	 clearInterval(interval);
+	 disabledButton.style.display="none"
+	 enabledButton.style.display="inline-block"
+	 span.innerText = "60"; 
+	 success.innerHTML = "";
+error.innerHTML = "";
+	 }
+	 n--
+	}, 1000);
+	}
+	
+	initialize()	
+	
+	
+	
+async function send(){
+
+success.innerHTML = "";
+error.innerHTML = "";
+enabledButton.innerHTML = "Sending...";
+
+fetch("<%=link%>", {
+      credentials: "include",
+      mode: "cors"
+})
+.then(x=>{
+   if(!x.ok) {
+     throw "error";
+   }
+   else return true
+})
+.then(()=>{
+success.innerHTML = "Sent";
+disabledButton.
+style.display="inline-block";
+enabledButton.style.display="none";
+initialize()
+})
+.catch((e)=>{
+error.innerHTML = "Error occured, please retry. "
+})
+.finally(()=>{
+enabledButton.innerHTML = "Resend";
+})
+}
+
+
+	</script>
+	
+	 </body>
+ </html>

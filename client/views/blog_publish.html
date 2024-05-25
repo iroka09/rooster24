@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang= "en-US">
+ <head>
+	 <title>Publish article</title>
+	 <meta name= "description" content= "Publish new article.">
+<%- include("includes/libraries_tags.html") %>
+ </head>
+	 <body onscroll= "scroll()" onbeforeunload= "return 'Are you sure you want to leave this page?'">	 
+	 <main>
+	<%- include("includes/header.html") %>
+	
+	<div  class="container-sm my-3">
+	
+	<div  class="alert alert-warning text-center pt-3 rounded small mb-4">
+	<h6>Warning</h6><hr>Even though the article you are about to publish will be reviewed by <%=brandName%> before it gets published to public, you are still responsible for the consequences of whatsoever you published. Be careful of what you post.
+</div>
+
+	  
+	  <!-- Advert -->
+
+	  
+
+<h4  class="text-muted text-center my-3 font-weight-light">Publish New Article</h4>
+
+<center class="small mb-2">Also supports html tags.<span class="ml-2 btn btn-light small py-0 px-2 border text-muted" data-toggle= "tooltip" title= 'To color highlight html, css, javascript or every other codes here, you must wrap those codes with code tag with highlight class i.e <code class="highlight"> ... </code>. To use html code you must add html class to the code tag i.e <code class="highlight html"> ... </code>' data-placement= "top" >Read Me</span>
+	</center>
+	
+<div  class="bg-light pb-3 shadow-sm">
+		
+	<div  id="options"  class="p-1 sticky-top overflow-hidden" style="z-index: 10">
+	<div  class="d-flex justify-content-between mb-1 overflow-hidden">
+	<b class="border text-light p-1" onclick= "exec('undo', null, this)"><i class="fa fa-undo fa-lg"></i></b>
+		<b class="border text-light p-1" onclick= "exec('redo',  null, this)"><i class="fa fa-repeat fa-lg"></i></b>
+	<b class="border text-light p-1" onclick= "exec('justifyleft', null, this)"><i class="fa fa-align-left fa-lg"></i></b>
+	<b class="border text-light p-1" onclick= "exec('justifycenter', null, this)"><i class="fa fa-align-center fa-lg"></i></b>
+	<b class="border text-light p-1" onclick= "exec('justifyright', null, this)"><i class="fa fa-align-right fa-lg"></i></b>
+	<b class="border text-light" onclick= "exec('bold', null, this)"><i class="fa fa-bold fa-sm"></i></b>
+	<b class="border text-light" onclick= "exec('italic', null, this)"><i class="fa fa-italic fa-lg"></i></b>
+		<b class="border text-light p-1" onclick= "exec('underline', null, this)"><i class="fa fa-underline fa-lg"></i></b>
+	<b class="border text-light p-1" onclick= "exec('formatBlock', 'h3', this)"><b>h3</b></b>
+		<b  class="border text-light p-1 overflow-hidden position-relative"><i class="fa fa-image fa-lg"></i>
+		<input class="text-muted position-absolute" onchange="exec('insertImage', 'fileURL', this)" type= "file" accept= "image/*"  id="pic-btn" style= "right:0;bottom:0; opacity:0"/> 
+		</b>
+</div>
+	<div  class="text-shadow bg-light text-center small d-flex justify-content-around">
+<span  id="title-count">
+Title<br> <b style= "color: red">0</b>/<span></span></span>
+<span  id="body-chars-count">
+Body-chars<br><b style= "color: red">0</b>/<span></span></span>
+<span  id="body-words-count">
+Body-words<br><b style= "color: red">0</b>/<span></span></span>
+<span  id="pic-count">
+Pictures<br> <b style= "color: red">0</b>/<span></span></span>
+	</div>
+</div>
+	
+	
+	<div  class="d-flex rounded overflow-hidden mt-3 border" style= "height: 110px">
+	<div style= "width: 50%; max-width: 140px; overflow:hidden"  onclick= "clickThumb()">
+	<div  class="h-100 w-100 d-flex flex-wrap justify-content-center align-content-center align-items-center"  id="eww"><b  class="d-block">&lt;Thumbnail&gt;</b><br><i  class="d-block">Click to add</i></div>
+	<img  id="thumbnail" style= "height: 100%; width:100%"/>
+	<input class="d-none" type= "file" accept= "image/*" id="thumb-btn" name= "thumb"/> 	
+	</div>
+	<textarea  class="w-100 h-100 form-control rounded-0 p-1" placeholder= "Enter article's title here..."  id="title"></textarea>
+	</div>
+	
+	
+	
+	
+	
+	<form  id="form">
+	<input name= "title" class= "d-none"  id="formTitle">
+	<textarea name= "body"  class="d-none"  id="formArticleBody"></textarea>
+	<div style= "min-height:150px; max-height: 500px" class= "border border-muted mt-3 p-2 form-control" id="articleBody" contenteditable>Write your article here...</div>
+	<div  class="mt-4 mb-2 small">
+	<div  class="text-dark small py-1">Category/Tag: Tags help people find your article easily, if tags are more than one, seperate them with comma and space e.g #bet, #jobs, #jokes <b>(tag is optional)</b></div>
+	
+<div  class="input-group">
+<select  class="custom-select" name="category">
+<option hidden value= "">Category</option>
+<% categories.slice(1).map(c=>{ %>
+<option><%=c%></option>
+<% }) %>
+</select>
+<input name= "tags"  class="form-control w-25"placeholder= "Enter tag/tags..."  id="tags" onblur= "validateTags()"/>
+</div>
+	</div>
+	<div  class="pt-1 text-danger text-center small"  id="error"></div>
+	<div  class="pt-1 text-success text-center h6"  id="success"></div>
+	<div  class="pt-1 text-info text-center  h6"  id="prog"></div>
+<button  class="btn text-light px-5 mt-5" id="publish" style= "background: var(--mylightmain)">Publish</button>
+	</form>
+	
+	
+	<div  class="d-none" id="picsBucket"></div>
+	
+</div>
+	
+	
+		  
+	  <!-- Advert -->
+
+	
+	
+	
+</div>
+
+	
+<%- include("includes/fixed_scroll_btn.html") %>
+
+<%- include("includes/footer.html") %>
+
+</main>
+
+
+
+<script>
+
+
+const bytes = require("bytes");
+
+function cap(tag=""){
+if(tag.constructor !== String) {
+let reg = /^.*function\s+|\(.+$/g
+throw Error(`Argument must be a string, you entered ${tag.constructor.toString().replace(reg,"")}`);
+}
+tag = tag?tag.replace(/[<>/]/g, ""):"";
+let tags = tag?`<${tag}>`:"";
+let tage = tag?`</${tag}>`:"";
+let x = this.split(""), arr = [], str; 
+x.forEach((a, i, e)=>{
+ if(i===0 || e[i-1] === " "){
+arr.push(a.toUpperCase())
+}
+else {
+arr.push(a.toLowerCase())
+  }
+})
+str = arr.join("")
+str = `${tags}${str}${tage}`;
+return str
+}
+String.prototype.capitalize = cap; 
+String.prototype.capitalise = cap; 
+
+
+
+let x = "my namTe on it for you and I have to go"
+
+
+
+
+
+// let pageY = 0;
+function scroll(){
+/*
+if(pageYOffset > pageY) {
+$("#options").removeClass("fixed-top");
+pageY = pageYOffset;
+}
+else if(pageYOffset < pageY && pageYOffset > articleBody.offsetTop) {
+$("#options").addClass("fixed-top");
+pageY = pageYOffset;
+}
+*/
+$("#go-up-btn").css("display", "none")
+if(pageYOffset < 400){
+$("#go-up-btn").css("display", "none")
+}
+else{
+$("#go-up-btn").css("display", "flex")
+  }
+}
+
+
+function clickThumb(){
+(window["thumb-btn"]).click();
+}
+
+
+function vibrateDiv(ele){
+    anime({
+        targets: ele,
+        loop: 5,
+        direction: "alternate",
+        translateX: [-6, 6, 0],
+        duration: 100,
+        easing: "linear",
+        rotate: [-2, 2, 0]
+    })
+}
+
+
+const titleMin = 20;
+const titleMax = 150;
+
+const bodyCharsMin = 500;
+const bodyCharsMax = 8000;
+
+const bodyWordsMin = 100;
+const bodyWordsMax = 4000;
+
+const pictureMin = 1;
+const pictureMinAlt = 7; //min pix if words/chars are not upto required
+const pictureMax = 20;
+
+
+$("#title-count span")
+.text(titleMax);
+$("#body-chars-count span")
+.text(bodyCharsMax);
+$("#body-words-count span")
+.text(bodyWordsMax);
+$("#pic-count span")
+.text(pictureMax);
+
+
+
+
+function validateThumbnail(){
+let error = {};
+let file = $("#thumb-btn").prop("files")[0];
+let size = (file && file.size)?file.size:0;
+if(!size){
+error.reason = "Please add a thumbnail to this article.";
+}
+else if(size > bytes("299kb")) {
+error.reason = "Thumbnail size is too large, choose thumbnail with maximum 299KB size.";
+}
+else if(size < bytes("2kb")) {
+error.reason = "Thumbnail quality is too poor, choose thumbnail with minimum of 2KB size.";
+}
+return error;  
+}
+
+
+function validateTitle(){
+let error = {};
+let str = $("#title").val();
+let x = str.length;
+   str = str.replace(/\s{2,}/, " ");
+   let num = str.trim().length;
+   let color = "";
+ if(num >= titleMin && num <= titleMax){ 
+ color = "green";
+   }
+   else{
+  let w = (titleMin>1)?
+  "characters":"character";
+  let ws = (titleMax>1)?
+  "characters":"character";
+ error.reason = `Title must contain at least ${titleMin} ${w} and at most ${titleMax} ${ws}.`;
+color = "red";
+}
+   $("#title-count b").text(num).css("color", color);
+   $("#title").val(str);
+   return error; 
+}
+
+
+
+function validatePicsLen(){
+let error = {};
+let color = "";
+let picLen = $("#articleBody")
+.html().match(/<img src=.+?>/g);
+picLen = (picLen===null)?0:picLen.length;
+if(picLen >= pictureMin && picLen <= pictureMax) {
+color = "green";
+}
+else {
+let w = (pictureMin>1)?
+"pictures":"picture";
+let ws = (pictureMax>1)?
+"pictures":"picture";
+error.reason = `Article must contain at least ${pictureMin} body ${w} and at most ${pictureMax} body ${ws}. To add picture, click on the image icon at the top-right.`;
+color = "red";
+}
+  $("#pic-count b").html(picLen).css("color", color);
+  return error; 
+}
+
+
+
+function validateCharsLen(){
+//== we need to know total images incase if chars are less than required
+let picAltValid = false; 
+let picLen = $("#articleBody")
+.html().match(/<img src=.+?>/g);
+picLen = (picLen===null)?0:picLen.length;
+if(picLen >= pictureMinAlt) {
+picAltValid = true;
+}
+//==
+let error = {};
+let val = $("#articleBody").text();
+if($("#articleBody").html() === "Write your article here..."){
+val = "";
+  }
+   val = val.replace(/\s{2,}/g, " ");
+   let num = val.trim().length;
+   let color = "";
+   if((num >= bodyCharsMin && num <= bodyCharsMax) || picAltValid) {
+   color = "green";
+   }
+   else{
+  let w = (bodyCharsMin>1)?
+  "characters":"character";
+  let ws = (bodyCharsMax>1)?
+  "characters":"character";
+   error.reason = `Article body must contain at least ${bodyCharsMin} ${w} and at most ${bodyCharsMax} ${ws}, if not then provide at least ${pictureMinAlt} pictures.`;
+color = "red";
+}
+   $("#body-chars-count b").text(num).css("color", color);
+   return error; 
+}
+
+
+
+
+function validateWordsLen(){
+//== we need to know total images incase if words are less than required
+let picAltValid = false; 
+let picLen = $("#articleBody")
+.html().match(/<img src=.+?>/g);
+picLen = (picLen===null)?0:picLen.length;
+if(picLen >= pictureMinAlt) {
+picAltValid = true;
+}
+//==
+let error = {};
+let val = $("#articleBody").text();
+if($("#articleBody").html() === "Write your article here..."){
+val = "";
+  }
+   val = val.replace(/\s{2,}/g, " ");
+   let num = val==""?0:val.trim().split(/\s+/).length;
+   let color = "";
+   if((num >= bodyWordsMin && num <= bodyWordsMax) || picAltValid) {
+   color = "green";
+   }
+   else{
+   let w = (bodyWordsMin>1)?
+   "words":"word";
+   let ws = (bodyWordsMin>1)?
+   "words":"word";
+ error.reason = `Article body must contain at least ${bodyWordsMin} ${w} and at most ${bodyWordsMax} ${ws}, if not then provide at least ${pictureMinAlt} pictures.`;
+color = "red";
+}
+   $("#body-words-count b").text(num).css("color", color);
+   return  error;
+}
+
+
+
+function validateTags(){
+let error = {};
+let val = $("#tags").val().trim();
+if(!/^(#\w+,\s*)*(#\w+)?$/.test(val)){
+error.reason = "Your tag mismatched the tag pattern.";
+}
+else if(/#\w{11,}/.test(val)){
+error.reason = "A tag should not be more than 10 characters long.";
+}
+else if(val.split(/,\s*/).length>30){
+error.reason = "Total tags should not be more than 30";
+}
+return error; 
+}
+
+
+
+
+function validateCategory(){
+let error = {};
+  if($("#form select").val() == ""){
+ error.reason = "Please choose a category for this article.";
+ }
+ return error
+}
+
+
+
+
+function putThumbToForm(){
+$("#form #temp-thumb").remove();
+let clone = $("#thumb-btn").clone();
+$(clone).attr("id", "temp-thumb");
+$(clone).prependTo("#form");
+}
+
+
+function putToPicsBucket(ele, val){
+let clone = $(ele).clone();
+$(clone).attr("name", val);
+$(clone).removeAttr("id");
+$(clone).prependTo("#picsBucket");
+}
+
+
+
+function putValidPicsBucketToForm(){
+//first remove all from form
+$('#form input[name^="blob:"]').remove();
+//then re-add
+$("#picsBucket input[type=file]").toArray().forEach((file)=>{
+let exists = $("#articleBody")
+.find(`img[src="${file.name}"]`).length; 
+if(exists){
+$("#form").append($(file).addClass("d-none").clone());
+}
+  })
+}
+
+
+
+function putAllTextToForm(){
+$("#formTitle").val($("#title").val());
+$("#formArticleBody")
+.val($("#articleBody").html());
+}
+
+
+
+
+function exec(cm, val, ele) {
+if($("#articleBody").html() == "Write your article here..."){
+$("#articleBody").html("");
+  }
+if(val == "fileURL") {
+val = URL.createObjectURL(ele.files[0]);
+}
+$("#articleBody").focus();	
+if(document.execCommand(cm, false, val)){
+if(ele.tagName === "INPUT"){
+$(`#articleBody img[src="${val}"]`).on("load", function(){
+$("#articleBody").height(0)
+.innerHeight(()=>{
+return $("#articleBody").prop("scrollHeight")
+   });
+})
+validatePicsLen();
+putToPicsBucket(ele, val)
+}
+    }
+  }
+
+
+
+
+
+
+
+//==== jQuery ====
+
+
+$(function(){
+  
+// $('[data-toggle="tooltip"]').tooltip();
+
+let allowPublish = true;
+$("#publish").click(async function(e){
+try {
+if(allowPublish === false) return;
+allowPublish = false;
+e.preventDefault();
+let obj = {}
+let shouldValidate = (<%=isProd%> && !<%=isAdmin%>)?true:false; 
+if(shouldValidate){
+obj = { 
+...validateTags(),
+...validateCategory(),
+...validatePicsLen(),
+...validateWordsLen(),
+...validateCharsLen(),
+...validateTitle(),
+...validateThumbnail()
+  }
+}
+if(obj.reason) {
+$("#error").html(obj.reason);
+vibrateDiv(error);
+// putValidPicsBucketToForm()
+return 
+  }
+  putValidPicsBucketToForm();
+  putAllTextToForm();
+  //upload
+  $("#error, #success").html("");
+  $("#prog").html("<i class='spinner-border spinner-border-sm'></i> &nbsp;Submitting...");
+  let res = await fetch("/publish", {
+  method: "post",
+  body: new FormData($("#form")[0]),
+  //credentials: "include",
+  cache: "no-cache",
+  //mode: "cors"
+  });
+  let msg = await res.text();
+  $("#prog").text("");
+  if(res.ok){
+    if(msg.includes("Please login to continue.")){
+      $("#error").text("Sorry your session has expired, please login to continue.")
+      return 
+    }
+  $("#success").html("<i class='fa fa-check'></i> &nbsp;"+msg);
+  $("body").removeAttr("onbeforeunload");
+  $("#articleBody,#picsBucket").html("").height(0);
+  $("#title").val("");
+  location.href = "/all_articles/?owner_id=<%=req.session.user._id%>"
+    }
+    else{
+    $("#prog").text("");
+    if(msg.includes("<!DOCTYPE html>")){
+    $("#error").text("Can't submit, error occured at the server, it might be due to large uploaded image or something else.");
+    }
+    else{
+    $("#error").text(msg);
+    }
+    vibrateDiv(error);
+  }
+}
+ catch(e){
+   alert(e)
+  $("#prog").text("");
+   $("#error").text("Error occured, couldn't connect to server.");
+   vibrateDiv(error);
+  }
+  finally{
+    allowPublish = true;
+  }
+})
+
+
+$("#articleBody").on("keyup paste focus blur", function(){
+validateCharsLen();
+validateWordsLen();
+validatePicsLen();
+validateTitle();
+$(this).height(0).innerHeight(()=>{
+return $(this).prop("scrollHeight")
+   })
+})
+
+
+$("#articleBody").focus(function(){
+let val = $(this).html();
+if(val == "Write your article here..."){
+$(this).html("");
+  }
+})
+
+
+$("#articleBody").blur(function(){
+let val = $(this).html();
+if(val == "" || val=="<br>"){
+$(this).html("Write your article here...");
+  }
+})
+
+
+$("#thumb-btn").change(function(){
+let url = URL.createObjectURL(this.files[0]);
+if(window.eww) eww.remove();
+$("#thumbnail").attr("src", url);
+putThumbToForm();
+   })
+   
+
+   $("#title").on("input paste", function(){
+   validateTitle();
+   })
+   
+   
+   
+})
+	</script>
+	 </body>
+ </html>

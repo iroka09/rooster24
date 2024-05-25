@@ -1,0 +1,784 @@
+
+<% 
+function getLoc(c){
+//  console.log(c)
+ let ct = c.country.toLowerCase();
+ let my1 = ipLoc.country_name?ipLoc.country_name.toLowerCase():"nigeria";
+ if(isMember){
+   let my2 = req.session.user.country.toLowerCase();
+   if(ct === my2) {
+     return c.state
+   }
+   return c.country
+ }
+ else{
+   if(ct === my1) {
+    return c.state
+   }
+ return c.country
+  }
+}
+
+let $ = cheerio.load(`<div id='d'>${art.body}</div>`);
+const body = $("div#d").text()
+.replace(/\s{2,}/g, " ")
+.replace(/(["'])/g, "\$1")
+.trim();
+%>
+
+<!DOCTYPE html>
+<html>
+ <head>
+	 <title>
+	     <%= art.title %>
+	 </title>
+<meta name= "description" content= '<%-body%>' />
+<link rel="icon" href='<%=req.headers.host+"/article/image/thumb/?art_id="+art._id%>' sizes="64x64"/>
+<!--for social medias -->
+<meta property="og:url" content="https://<%=pageUrl%>" />
+<meta property="og:image" content='https://<%=req.headers.host+"/article/image/thumb/?art_id="+art._id%>' /> 
+<meta property="og:type" content="article" />
+<meta property="og:locale" content="en_GB" />
+<meta property="og:description" content='<%-body%>' />
+<!--==========-->
+<%- include("includes/libraries_tags.html") %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/monokai.min.css"/>
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script> 
+<script>
+ hljs.initHighlightingOnLoad(); //highlights codes when dom loads; 
+</script>
+<style >
+  html{
+    scroll-behavior: initial;
+    font-family: arial;
+  }
+  #title, #body, .comment-cont{
+    color: #333
+  }
+  .img-divWrap{
+    position: relative;
+    margin: 8px auto;
+    padding:0;
+    min-width: 80%;
+  	max-width: 100%;
+  }
+ .img-divWrap .text {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding:0;
+    margin: 0;
+  	width: 100%;
+  	height: 100%;
+  	background: #fafafa;
+  	color: #bbb
+ }
+ .img-divWrap img{
+  position: absolute;
+  top: 0%;
+  left: 0;
+  z-index: 1;
+  margin: 0 !important;
+	width: 100%;
+  height: 100%;
+  object-fit: contain !important; 
+ }
+ .comment-user-info span{
+   width: 98%;
+   display: inline-block;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   margin: 0;
+   padding: 0;
+ }
+ #commentBox{
+   max-width: 500px;
+ }
+ a{
+   text-decoration: none !important;
+ }
+</style>
+ </head>
+	 <body onload="loadedAllDatas()">	 
+	 <main>
+<%- include("includes/header.html") %>
+	
+	
+	
+	<div  class="container-lg my-5">
+	
+	
+		  <!-- Advert -->
+
+	
+<div class="row">
+  <!-- col left -->
+<div class="col-md-9">
+<h4 id="title">
+    <%=art.title%>
+</h4>
+	
+	
+	<div  id="author-cont"  class="d-flex mt-3 border-bottom border-top p-1 align-items-center bg-light">
+	<a href= "<%=art.owner.pic_link%>">
+	<img src= "<%=art.owner.pic_link+'?icon=1'%>" alt= "author's pictures"  id="author-pic" style= "width: 70px;  height: 70px; object-fit: cover;"  class="img-thumbnail shadow-sm rounded-circle mr-3"/>
+	</a>
+	<div   id="author-details"  class="small">
+	<i  class="fa fa-user"></i> <b>By:</b> <i><a href= "/profile_page/?user_id=<%=art.owner._id%>"><%=art.owner.username+" ("+art.owner.gender.trim().charAt(0)+")"%></a></i><br>
+	<i  class="fa fa-flag"></i> <b>Region:</b> <i><%=getLoc(art.owner)%></i><br>
+	<i  class="fa fa-history"></i> <b>Date:</b> <i><%= moment(art.timestamp).tz(ipLoc.time_zone).fromNow()%></i>
+	</div>
+	</div>
+
+
+
+<div  id="body"  class="py-4 px-2 overflow-hidden" style="user-select: none">
+<%
+//console.log("\n\n\n",art.body.replace(/\r?\n/g,"<br/>") )
+
+let artBody = art.body.replace(/\r?\n/g,"<br/>")
+.replace(/(?<=<\s*code.*>.*)<div>(?=.*<\s*\/\s*code.*>)/gi," ")
+.replace(/(?<=<\s*code.*>.*)<\/div>(?=.*<\s*\/\s*code.*>)/gi,"\r\n")
+.replace(/(?<=<\s*code.*>.*)<br\/?\>(?=.*<\s*\/\s*code.*>)/gi,"\r\n");
+$ = cheerio.load(`<div id='d'>${artBody}</div>`);
+$("pre code").unwrap("<pre>");
+$("code.highlight:not(pre code)").wrap("<pre>");
+$("pre code.highlight").addClass("rounded")
+.filter(function(){
+  if($(this).hasClass("html")){
+      $(this).text($(this).html())
+  }
+});
+artBody = $("div#d").html().trim();
+%>
+<%- artBody %>
+</div>
+
+
+	  <!-- Advert -->
+
+	  
+<!-- starts if(art.approved)-->	  
+<%if(art.state === "approved"){%>
+<h6><center class="py-2 my-1 text-danger  border border-none border-top">SHARE</center></h6>
+<div  class="border-bottom border-top bg-light mb-4 p-2" id="shareLikes">
+<i class="fa fa-share"></i> Share:
+<div  class="d-inline-flex align-items-center mb-2">
+<a href= "/share_article/whatsapp/?art_id=<%=art._id%>&continue=whatsapp://send?text=<%=pageUrl%>"  class="fa fa-whatsapp btn text-white bg-success ml-1"></a>
+<a href= "/share_article/facebook/?art_id=<%=art._id%>&continue=https://www.facebook.com/sharer.php?u=<%=pageUrl%>"  class="fa fa-facebook btn text-white bg-primary ml-1"></a>
+<a href= "/share_article/twitter/?art_id=<%=art._id%>&continue=https://twitter.com/intent/tweet?original_referer=https://<%=pageUrl%>&source=tweetbutton&text=<%=art.title%>&url=https://<%=req.headers.host+req.url%>&via=https://<%=req.headers.host%>"  class="fa fa-twitter btn text-white bg-primay ml-1" style= "background: #0ad"></a>
+	  <!-- hidden for copy link purpose -->
+<textarea id="inp" style="position:absolute; left: -1000000%; z-index: -500"><%=art.title%>
+
+
+<%=pageUrl%></textarea>
+<!-- === -->
+<a hrf= "#"  class="btn text-white btn-secondary ml-1"  id="copylink" data-toggle= "tooltip" title= "Copied link" data-placement= "top" ><i  class="fa fa-clipboard"></i></a>
+ </div>
+ <br>
+<div class="d-flex justify-content-between align-items-center">
+<span id="likeSpan">
+<a id="like" class="fa fa-thumbs-o-up href="/like_article/?art_id=<%=art._id%>">
+<span id="spin" class="spinner-border-sm"></span>
+<span class="text">
+  <%=liked?"Unlike":"Like"%>
+</span>
+</a>
+<b class="text-danger small"> (<span class="num"><%=convertUnit(likes)%></span>)</b>
+</span>
+<span id="commentSpan">
+<a class="fa fa-comment-o" href= "#comment-input"> Comment</a>
+<b class="small text-danger"> (<span id="commentCount"><%=convertUnit(art.comments.length)%></span>)</b> 
+</span>
+<span id="shareSapn">
+Shared<b class="text-danger small"> (<%=convertUnit(shares)%>) </b>
+   </span>
+ </div>
+</div>
+
+
+
+
+ <% if(art.comments.length > 0) { %>
+
+<div class="text-center">
+<h4 class="text-center font-weight-light mt-2 mb-0 border d-inline-block p-1">Comments</h4>
+</div>
+
+
+<% let comment_owner; %>
+
+
+ <% 
+ art.comments.forEach((comment)=>{
+  comment_owner = comment.owner?comment.owner._id:comment.userAgent;
+  const _isMember = comment.isMember;
+  /*
+  _isMember: the owner of the comment is memeber.
+  isMember: the viewer of this article is member.
+  */
+  let ME = false; 
+  if((isMember && _isMember && comment.owner.username === req.session.user.username)||comment.userAgent === req.cookies["user-agent"]){
+  ME = true;
+  }
+  const owner = comment.owner; 
+//  console.log(art.comments)
+  %>
+<div class="position-relative <%=ME?'ml-auto':'mr-auto'%>  parent-comment-cont border rounded my-3 small shadow-sm" style= "max-width:400px;">
+  <!-- <b> for auto focus after commenting-->
+<b class="position-absolute" style="left:50%;top: -15vh" id="<%=comment._id%>"></b>
+
+<div  class="d-flex align-items-center border-bottom py-1 <%=_isMember?"alert-warning":"alert-secondary"%>">
+<a href= "<%=_isMember?owner.pic_link:`/default_${comment.gender.toLowerCase()}.png`%>">
+<img src= "<%=(_isMember?owner.pic_link:`/default_${comment.gender.toLowerCase()}.png`)+'?icon=1'%>"  class="rounded-circle mx-2 border bg-light" style= "width:60px; height:60px" />
+</a>
+<div  class="w-75 -2 comment-user-info" style= "max-width: 200px; line-height: 13px">
+  <span> <!-- username -->
+<i  class="fa fa-user"></i> 
+<%if(_isMember){%>
+<a href= "/profile_page/?user_id=<%=owner._id%>">
+  <i>
+<%=owner.username+" ("+owner.gender.trim().charAt(0)+")"%>
+  </i>
+</a>
+<%}
+ else {%>
+  <i><%=comment.name%></i> (Not a member)
+<%}%>
+  </span> <!-- end username -->
+<%if(_isMember){%>
+  <span> 
+<i class="fa fa-flag"></i> 
+<i>
+  <%=getLoc(owner)%>
+</i> 
+  </span> 
+<% }
+else if(comment.country&&comment.state) {%>
+ <span>
+   <i class="fa fa-flag"></i> <i>
+  <%=getLoc(comment)%>
+</i> 
+  </span>
+<%}
+if(!_isMember && comment.website){%>
+ <span>
+<i class="fa fa-globe"></i> 
+<a href="http://<%=comment.website%>">
+<i><%=comment.website%></i>
+</a> 
+ </span>
+<%}%>
+  <span> 
+<i  class="fa fa-history"></i> <i>
+  <%=moment(comment.timestamp).tz(ipLoc.time_zone).fromNow()%></i>
+    </span> 
+</div>
+<div  class="ml-auto mr-3">
+  <%if(ME){%>
+<a href= "/delete_comment/<%=art._id+"/"+comment._id%>"  class="fa fa-trash fa-lg text-muted border px-2 py-1 rounded bg-white d-block del btn" ><span style="font-size: 0.8em">delete</span></a>
+<%}%>
+    </div>
+   </div>
+  <div  class="p-2 border-warning comment-cont" style="font-size:1.14em; max-height:200px;overflow:scroll;position:relative">
+<%- escape(comment.body).replace(/\r?\n/g,"<br/>").trim() %>
+  </div>
+</div>
+<% }) %>
+
+<br/>
+
+<div  class="clearfix d-none">
+	<ul  class="pagination  float-right my-2">
+	<li  class="page-item active">
+	<a  class="page-link" href= "#">1</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">2</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">3</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">4</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">5</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link">...</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">100</a>
+	</li>
+</ul>
+	</div>
+	<hr/>
+<% } %>
+	
+	
+	<% if(isMember) { %>
+<div  class="py-2 px-3 mx-auto shadow-sm bg-light" id="commentBox">
+	<form class="my-2" action="/comment_article/<%=art._id%>" method= "post" >
+	 <div class="form-group"  id="commentFocus">
+	   <label for="comment-input">Your Comment <span class="text-danger">*</span></label>
+	<textarea name="comment" class="form-control"  id="comment-input" maxlength="1500" placeholder = "Write your comment..." required></textarea>
+	</div>
+	<button  class="btn btn-dark my-2">Comment</button>
+	</form>
+</div>
+<%}
+else {%>
+<div  class="my-2 mx-auto py-2 px-3 shadow-sm rounded bg-light " id="commentBox">
+<center class="small my-3">
+<h5 class="mb-2" style="color: #555">
+  Write your Comment</h5>
+</center>
+	<form class="my-2" action="/comment_article/<%=art._id%>" method= "post" >
+	<div class="form-group">
+	 <label class="form-label" for="name">Your Name<span class="small">&emsp; (optional)</span></label>
+	 <input id="name" name="name" class="form-control" value = "<%=name%>" maxlength="15" placeholder="Enter your name..."/>
+	</div>
+	<div class="form-group">
+	 <label class="form-label" for="gender">Your Gender <span class="text-danger">*</span></label>
+	 <select id="gender" name="gender" class="custom-select" required>
+	 <option <%=(gender==="Male")?"selected":""%>>Male</option>
+	 <option <%=(gender==="Female")?"selected":""%>>Female</option>
+	 </select>
+	</div>
+	<div class="form-group">
+	 <label class="form-label">Your Email<span class="small">&emsp;(optional)</span>
+	 <!--
+	 	<span class="ml-4 btn btn-light small py-0 px-2 border text-muted" data-toggle= "tooltip" title= "(No one will see this, we use it to notify you when someone replies your comment)" data-placement= "bottom" >
+	  Read Me</span>
+	 -->
+	 </label>
+	 <input id="email" name="email" class="form-control" value = "<%=email%>" type="email" maxlength="200" placeholder="your email..."/>
+	</div>
+	<div class="form-group">
+	 <label class="form-label" for="website">Your Website<span class="small">&emsp; (optional)</span></label>
+	 <input id="website" name="website" class="form-control" value = "<%=website%>" maxlength="200" placeholder="your website..."/>
+	</div>
+	<div class="form-group">
+	 <label class="form-label" for="comment-input">Your Comment <span class="text-danger">*</span></label>
+	<textarea name="comment" class="form-control"  id="comment-input" maxlength="1500" placeholder = "Write your comment..." required></textarea>
+		</div>
+		<div class="text-right my-2">
+	<span class="btn btn-light small py-0 px-2 border text-muted" data-toggle= "tooltip" title= "Note: If you comment/like an article with this browser, you can only unlike the article / delete the comment with exactly this same browser. (for non-members only)" data-placement= "top" >
+	  Read Me</span>
+		</div>
+	<button  class="btn btn-dark my-2">Comment</button>
+	</form>
+  </div>
+<% } %>
+
+	
+<%}%> <!-- ended if(art.approved)-->
+
+
+
+<%if(isMember && String(art.owner._id) === String(user._id)) {%>	
+<br><br><br><hr>
+	<div  class="text-right w-100 my-1 d-flex py-1 align-items-center">
+	<button class="btn btn-danger" data-toggle="modal" data-target="#mymodal">Delete article</button>
+	</div>
+<%}%>
+
+
+
+ <!-- advert  -->
+
+
+
+	
+<%if(!isMember) {%>		
+	<div  class="info text-center p-3 mt-5 mx-0 mb-2 rounded shadow-sm">
+Join <%=brandName%> to have complete access.<br><br>
+<a  href= "/register" class="btn round-btn d-inline-block" style= "border:2px solid #bbb">Join now</a>
+   </div>
+ <%}%>
+ 
+ 
+	  
+	  
+ 
+
+
+<!-- === related articles === -->
+<hr class="mt-5"/>
+<h5 class= "pl-1 text-mylightmain">
+Other Articles
+</h5>	
+<% if(req.cookies["article-style"]==="thumbnail"){ %>
+<section class= "articles-section">
+<% similarArt.forEach((sArt)=>{%>
+<a href= "/article/?art_id=<%=sArt._id%>" class="btn btn-block p-0 art-btn" style="box-shadow: none">
+<ul  class="ul-clear article-cont shadow-sm overflow-hidden">
+<li  class="article-img-cont">
+  <img src="/article/image/thumb/?icon=1&art_id=<%=sArt._id%>" alt="image"/>
+</li>
+<li  class="article-title-cont pl-1 text-dark">
+	<h5 class="align-items-center">
+<%=sArt.title%>
+  </h5>
+	<div  class="small text-mylightmain pb-1">
+	<b class="fa fa-history"></b> 
+	<%= moment(sArt.timestamp).tz(ipLoc.time_zone).fromNow()%>&emsp;
+	<b  class="fa fa-eye"></b> <%=sArt.views.length%>&emsp;
+	<b  class="fa fa-user"></b> <%=sArt.owner&&sArt.owner.username%>&emsp;
+	(<%=sArt.category%>)
+ </div>
+	 </li>
+	</ul>
+</a>
+<%})%>
+</section>
+
+<% } 
+else { %>
+
+<div class="mt-4">
+<% similarArt.forEach((ART)=>{ %>
+<div class="mb-3" style="display: flex">
+<div class="text-mylightmain" style="font-size: 1em">👉</div>
+<div class="ml-2 text-wrap d-block ">
+<a href= "/article/?art_id=<%=ART._id%>">
+  <b style="color: #666; font-weight: 500">
+ <%=ART.title%>
+  </b>
+<i class="small text-muted d-inline-block border rounded px-1">
+	<b class="fa fa-history"></b> 
+	<%= moment(ART.timestamp).tz(ipLoc.time_zone).fromNow()%>&emsp;
+	  <b  class="fa fa-eye"></b> <%=ART.views.length%>&emsp;
+  <b class="fa fa-user"></b> <%=ART.owner && ART.owner.username%>&emsp;
+	(<%=ART.category%>)
+ </i>
+ </a>
+ </div>
+ </div> 
+<% }) %>
+</div>
+<% } %>
+
+
+
+
+
+<div class="clearfix p-2 text-center mb-5">
+<% if(req.session.see_more_similar){ %>
+ <a href= "/see_more_arts/more_similar/1"  class="h5">See More <i class="fa fa-angle-double-right"></i></a>
+<%}%>
+	</div>	
+
+
+	  
+
+	<!-- MODAL delete article-->
+<div class="modal fade text-muted" id="mymodal">
+ <div  class="modal-dialog modal-dialog-centered modal-sm">
+ <div  class="modal-content">
+ <div  class="modal-header">
+ <h4 class="modal-title">Delete Article</h4>
+ </div>
+ <div  class="modal-body text-center">
+ <h6 class="text-muted p-2">
+If you click proceed you can't undo the process.</h6>
+<br>
+<span class="text-danger font-italic">Are you sure you want to delete this article?</span>
+ </div>
+ <div  class="modal-footer">
+  <button class="btn btn-light ml-auto mr-2 shadow-sm" data-dismiss= "modal" >Cancel</button>
+  <a href= "/delete_article/?art_id=<%=art._id%>&referer=<%=req.headers.referer%>" class="btn btn-danger">Proceed</a>
+       </div>
+ </div>
+ </div>
+ </div>
+ 
+ 
+ 
+	<!-- MODAL delete comment-->
+<div class="modal fade text-muted" id="mymodal-comment">
+ <div  class="modal-dialog modal-dialog-centered modal-sm">
+ <div  class="modal-content">
+ <div  class="modal-header">
+ <h4 class="modal-title">Delete Comment</h4>
+ </div>
+ <div  class="modal-body text-center">
+ <h6 class="text-muted p-2">
+If you click proceed you can't undo the process.</h6>
+<br>
+<span class="text-danger font-italic">Are you sure you want to delete this comment?</span>
+ </div>
+ <div  class="modal-footer">
+  <button class="btn btn-light ml-auto mr-2 shadow-sm" data-dismiss= "modal" >Cancel</button>
+  <a type= "submit" class="btn btn-danger"  data-dismiss= "modal" id="del-proceed">Proceed</a>
+       </div>
+ </div>
+ </div>
+ </div>
+
+</div> <!-- ended col-left -->
+
+<!-- right col -->
+<div class="col-md-3">
+   <!-- advert -->
+<script async="async" data-cfasync="false" src="//pl16271370.performancetrustednetwork.com/23577b6422af37181eee0497a4a3d995/invoke.js"></script>
+<div id="container-23577b6422af37181eee0497a4a3d995"></div>
+   <!-- advert -->
+<script async="async" data-cfasync="false" src="//pl16271370.performancetrustednetwork.com/23577b6422af37181eee0497a4a3d996/invoke.js"></script>
+<div id="container-23577b6422af37181eee0497a4a3d996"></div>
+</div>
+
+
+
+
+</div><!-- ended row -->
+
+</div><!-- ended container -->
+
+	
+<%- include("includes/fixed_btn.html") %>
+	
+<%- include("includes/footer.html") %>
+	</main>
+	
+	
+	
+<script>
+try{
+  $("#likeSpan #like").on("click",function(event){
+    event.preventDefault();
+    const span = $("#likeSpan")
+    span.find("#spin").addClass("spinner-border")
+    fetch("/like_article/?ajax=1&art_id=<%=art._id%>",{
+     // credentials: "include",
+     // mode: "cors"
+    })
+    .then(x=>x.json())
+    .then(x=>{
+      if(x.error) throw x; 
+      $("#likeSpan .text").html(x.result)
+     $("#likeSpan .num").html(x.count)
+    /* if(x.result==="Like"){
+     $("#likeSpan #like").removeClass("fa-thumbs-o-down").addClass("fa-thumbs-o-up")
+     }
+     else{
+      $("#likeSpan #like").removeClass("fa-thumbs-o-up").addClass("fa-thumbs-o-down")
+     } */
+    })
+    .catch(e=>e.error&&alert(e.error))
+    .finally(()=>{
+      span.find("#spin").removeClass("spinner-border")
+    })
+  })
+  
+
+/*
+function scroll(){
+$("#go-up-btn").css("display", "none")
+if(pageYOffset < 400){
+$("#go-up-btn").css("display", "none")
+}
+else{
+$("#go-up-btn").css("display", "flex")
+  }
+};
+*/
+
+
+
+
+
+
+let imagesLoaded = false; 
+
+//(for image caching purpose)
+function loadedAllDatas(){
+  imagesLoaded = true
+}
+
+
+//=== jQuery ====
+
+$(function(){
+//$("code:not(pre code)").wrap("<pre>")
+$(".del span").remove(); 
+//auto increase comment box height
+$("#comment-input").on("input paste", function(){
+$(this).height(0).innerHeight(()=>{
+return $(this).prop("scrollHeight")
+   })
+});
+
+//==delete comment btn (for applying modal)
+$(".del").attr({
+  "data-toggle": "modal",
+  "data-target": "#mymodal-comment"
+}).click(function(event){
+event.preventDefault();
+$("#del-proceed").attr("href", this)
+});
+
+$("#del-proceed").click(function(){
+  try{
+  let link = (""+this).slice((""+this)
+  .indexOf("/delete_comment"));
+  let del = $(`.del[href*="${link}"]`);
+  del.removeAttr("data-toggle", "data-target")
+  del.removeClass("fa-trash").html(`<i class="spinner spinner-border spinner-border-sm text-danger"></i>`);
+  fetch(link, {
+    method: "post",
+    headers: {
+      "content-type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({ajax:"Ajax"}),
+    cache: "no-cache",
+   // credentials: "include",
+    //mode: "cors"
+  })
+  .then(x=>x.json())
+  .then(x=>{
+    if(x.error===true) throw x
+    del.parents(".parent-comment-cont").fadeOut();
+    $("#commentCount").text(function(i,x){
+      if(!isNaN(x)) {
+        $(this).text(--x)
+      }
+    })
+  })
+  .catch(e=>{
+    $("#toast").find(".toast-body").html("Sorry, unable to delete your comment, please retry.").parent().toast("show");
+    del.html("").addClass("fa-trash").attr({
+      "data-toggle": "modal",
+      "data-target": "#mymodal-comment"
+    })
+  })
+  }
+  catch(e){
+    alert(e)
+  }
+})
+//===
+
+
+//copy link to clipboard
+// $('[data-toggle=tooltip]').tooltip();
+$("#copylink").click(function(e){
+  $("#inp").select()
+if(document.execCommand("copy")){
+  $("#inp").blur()
+  setTimeout(()=>$(this).tooltip("hide"), 2000)
+    }
+  });
+
+//comment div process read_more button
+$(".comment-cont").toArray()
+.forEach(cont=>{
+  cont = $(cont)
+  if(cont.prop("scrollHeight") > 200){
+   cont.css("overflow", "hidden")
+   .append(`<div class="text-center" style="position:absolute; bottom:0;left:0; width:100%; padding:0 20px; background-image:linear-gradient(transparent, #eee)">
+    <button class="readMore-btn" style="color:#fff;background:#08e;opacity:0.6;border:0;font-size:1.1em;outline:0;paddingw:2px 8px"><i class="fa fa-chevron-down"></i> Read More</button>
+    </div>`)
+   }
+ })
+  
+  //handle read_more btn
+  $(".readMore-btn").click(function(){
+  //increase height 
+  if($(this).text().includes("More")){
+    $(this).parents(".comment-cont")
+    .css("max-height", "initial")
+    .height(function(){
+      return $(this).height()+20
+    });
+    $(this).html("<i class='fa fa-chevron-up'> Read Less");
+  }
+  else{
+    //decrease height
+    $(this).parents(".comment-cont")
+    .css("max-height", "200px")
+    .css("height", "initial")
+    $(this).html("<i class='fa fa-chevron-down'> Read More");
+  }
+ })
+
+//(Loading image...) events
+setTimeout(()=>{
+$("div#body img[src]").toArray().forEach(img=>{
+  //loaded
+$(img)
+ .on("load", function(){
+ $(this).siblings().remove();
+  $(this).css("opacity", 1).parent().css("margin", "0 auto") 
+  })
+  //error load
+ .on("error", function(){
+ $(this).siblings().find(".loading span")
+ .addClass("d-none").next().html(`
+ <center style="color:#fbb">Failed to load image.<br>Refresh page.</center>`);
+ $(this).remove()
+  })
+});
+}, 0); //ended setTimeout
+
+
+//(Loading image...) setup 
+$("div#body img[src]").toArray().forEach(img=>{
+let sw = $("div#body").innerWidth();
+let iw = $(img).attr("data-width");
+let ih = $(img).attr("data-height");
+let height = (ih/iw)*sw;
+let divWrap = $("<div>");
+divWrap.addClass("img-divWrap")
+.css({height});
+$(img).wrap(divWrap)
+});
+
+$("div#body img").after(`
+<div class="text rounded">
+<h3><%=brandName%></h3>
+<div class="loading">
+<span class="spinner spinner-grow spinner-grow-sm"></span> 
+<i>Loading image...</i>
+</div>
+</div>`);
+
+//=====
+ $(".img-divWrap img").css("opacity",0)
+ .siblings(".text")
+ .css("display","flex")
+//=======
+
+
+//all images loaded automatically (for image caching)
+let allow = true;
+function trigger(){
+if(allow===false){
+  clearInterval(tmt);
+  return 
+}
+if(imagesLoaded){
+  let imgs = $("div#body img[src]");
+  $(imgs).siblings().remove();
+  $(imgs).css("opacity", 1).parent()
+  .css("margin", "0 auto");
+  allow = false; 
+  }
+}
+let tmt = setInterval(trigger, 2000);
+
+}) // jquery ends
+
+
+}
+catch(e){
+  console.log(e)
+}
+	</script>
+	 </body>
+ </html>

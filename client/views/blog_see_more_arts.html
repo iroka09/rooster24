@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html >
+ <head>
+	 <title>More articles</title>
+	 <meta name= "description" content= "News.">
+<%- include("includes/libraries_tags.html") %>
+ </head>
+
+	 <body onscroll= "scroll()">	 
+	<main>
+<%- include("includes/header.html") %>
+	
+	
+<!-- Advert -->
+	  
+	<div class="container-lg">
+	
+<div class="row">
+	
+	<div class="col-md-9">
+	
+<%if(req.cookies["article-style"]==="thumbnail"){%>
+<section class= "articles-section">
+<% article.forEach(art=>{  %>
+<a href= "/article/?art_id=<%=art._id%>" class="btn btn-block p-0 art-btn" style="box-shadow: none">
+<ul  class="ul-clear article-cont shadow-sm overflow-hidden <%=(art.state==="pending")?"border border-warning":""%>  <%=(art.state==="rejected")?"border border-danger":""%>">
+<li  class="article-img-cont">
+  <img src="/article/image/thumb/?icon=1&art_id=<%=art._id%>" alt="image"/>
+</li>
+<li  class="article-title-cont pl-1 text-dark">
+	<h5 class="align-items-center">
+<%=art.title%>
+  </h5>
+	<div class="small text-mylightmain pb-1 <%=(art.state==="pending")?"alert-warning":""%>  <%=(art.state==="rejected")?"bg-danger":""%>">
+	<b class="fa fa-history"></b> 
+	<%= moment(art.timestamp).tz(ipLoc.time_zone).fromNow()%>&emsp;
+	  <b  class="fa fa-eye"></b> <%=art.views.length%>&emsp;
+  <b class="fa fa-user"></b> <%=art.owner&&art.owner.username%>&emsp;
+	(<%=art.category%>)
+ </div>
+	 </li>
+	</ul>
+</a>
+<% }) %>
+</section>
+
+<%}
+else {%>
+<div class="mt-4">
+<% article.map(art=>{  %>
+<a href= "/article/?art_id=<%=art._id%>">
+	<div class="text-dark text-left" style="display: flex; flex-wrap: nowrap; justify-content: flex-start">
+<span class="text-mylightmain" style="font-size: 1.1em">👉</span>
+<div>
+<h6 class="ml-2 text-wrap">
+<%=art.title%>
+</h6>
+<div class="small text-muted">
+	<b class="fa fa-history"></b> 
+	<%= moment(art.timestamp).tz(ipLoc.time_zone).fromNow()%>&emsp;
+	  <b  class="fa fa-eye"></b> <%=art.views.length%>&emsp;
+  <b class="fa fa-user"></b> <%=art.owner&&art.owner.username%>&emsp;
+	(<%=art.category%>)
+ </div>
+ </div>
+ </div>
+</a>
+<hr/>
+<% }) %>
+</div>
+<% } %>
+
+<div  class="clearfix">
+
+	<ul  class="pagination  float-right my-2">
+	<li  class="page-item active">
+	<a  class="page-link" href= "#">1</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">2</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">3</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">4</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">5</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link">...</a>
+	</li>
+	<li  class="page-item">
+	<a  class="page-link" href= "#">100</a>
+	</li>
+</ul>
+	</div>
+	
+	</div> <!-- ended col left -->
+
+<div class="col-md-3">
+   <!-- advert -->
+<script async="async" data-cfasync="false" src="//pl16271370.performancetrustednetwork.com/23577b6422af37181eee0497a4a3d995/invoke.js"></script>
+<div id="container-23577b6422af37181eee0497a4a3d995"></div>
+	 
+</div> <!-- ended col right-->
+
+
+</div> <!-- ended row-->
+
+</div>
+	
+	<!-- advert -->
+
+	
+	
+	
+<%- include("includes/fixed_btn.html") %>
+
+<%- include("includes/footer.html") %>
+	
+</main>
+
+
+ <script>
+ function scroll(){
+ $("#go-up-btn").css("display", "none")
+if(pageYOffset < 400){
+$("#go-up-btn").css("display", "none")
+}
+else{
+$("#go-up-btn").css("display", "flex")
+  }
+}
+
+
+
+$(function(){
+
+
+	})
+	
+	
+
+	</script>
+	</body>
+ </html>
+ 

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+ <head>
+	 <title>Reset <%=brandName%> password</title>
+	 <meta name= "viewport" content= "width=device-width; initial-scale=1.0">
+	 <meta charset="UTF-8"/>
+	 <style> 
+	 
+	 body{ 
+	   font-family: arial;
+	   background: #eee;
+	 }  
+	 div#cont{
+	 overflow: hidden; 
+	 background: white;
+	 color: #333; 
+	 padding: 20px 10px;
+	 border-top: 5px solid hsla(0, 100%, 27%, 1);
+	 max-width: 500px;
+	 margin: auto; 
+	 }
+	 a {
+	 background: hsla(0, 100%, 27%, 1);
+	 text-decoration: none;
+	 color: #fff;
+	 border-radius: 2px; 
+	 text-decoration: none;
+	 display: inline-block; 	 
+	 text-align: center;
+	 border: none;
+	 padding: 10px 30px;
+	 font-size: 1em;
+	 margin: 40px auto; 
+	 box-shadow: 1px 1px 1px #aaa;
+	 text-shadow: 1px 1px 2px #222; 
+	 }
+	 hr{
+	 border-color: rgba(0, 0, 0, 0.1)
+	 } 
+	</style>
+ </head>
+	 <body>
+	 
+	<div id="cont">
+	  	  <img src="<%=url%>/favicon.ico" style="height: 70px; width:70px; display:block; margin: 10px auto;"/>
+	  <center>
+<h3 style="color:#333">Reset your <%=brandName%> password</h3>
+	<hr>
+	<b>Note:</b> This link will expire in 20 minutes.
+	<br><br>
+<a href="<%=link%>">Reset password</a>
+	</center>
+	</div> 
+	
+	 </body>
+ </html>

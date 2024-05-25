@@ -1,0 +1,29 @@
+
+<style>
+  #nav-left a{
+  display: block;
+  color: var(--mygray); 
+  }
+  #nav-left li.current{
+ border-left: 3px solid var(--mylightmain);
+ }
+ #nav-left li.current a{
+ color: var(--mylightmain); 
+ }
+  .flex-left {
+ width: 20%;
+ }
+</style>
+
+<%if(nav.cat || isMe){%>
+<aside class="flex-left ml-1 d-md-block bg-light" style= "display:none">
+<ul class= "list-group ul-clear list-group-flush"  id="nav-left">
+<% nav.cat && nav.cat.map(x=>{ %>
+<li class="<%=(query.cat===x)?"current bg-mylightgray":""%>">
+   <a href= "/?cat=<%=x%>&filter=All" class="px-3 py-2">
+      <%=x%> (<%=convertUnit(x==="All"?catNum.length:catNum.filter(c=>c===x.toLowerCase()).length)%>)
+      </a></li>
+<% }) %>
+	  	 </ul>
+</aside>
+<%}%>
